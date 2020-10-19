@@ -1,0 +1,335 @@
+---
+title: "Bayes@Lund Book Club" # this will only be show in share-along
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    lib_dir: libs
+    seal: false
+    nature:
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+class: title-slide, inverse, left
+
+background-image: url(fig/pt-bookcover.jpg)
+background-position: right 50px bottom 25px
+background-size: 15%
+
+```{css, echo = FALSE}
+.title-slide .remark-slide-number {
+  display: none;
+}
+```
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(RefManageR)
+```
+
+```{r xaringan-extra-all-the-things, echo=FALSE}
+library(xaringanExtra)
+xaringanExtra::use_xaringan_extra(
+  c("tile_view", "panelset", "editable", 
+    "animate", "tachyons")
+)
+
+xaringanExtra::use_tachyons()
+
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,         #<<
+  mute_unhighlighted_code = TRUE  #<<
+)
+
+xaringanExtra::use_logo("fig/bl_logo.png",
+                        link_url = "https://www.lucs.lu.se/bayes/",
+                        position=css_position(top = "2em", right = "2em"))
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(base_color = "#2a3990",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "300", "300i"),
+  code_font_google   = google_font("Fira Mono")
+)
+```
+
+.h1.f-headline.fw1[
+Probability Theory
+]
+
+.h2.f-subheadline.lh-title[
+The logic of science
+]
+
+<br><br><br><br><br>
+.f3.lh-title[
+Bayes@Lund Book Club<br>Chapters 1-2
+]
+
+---
+background-image: url(fig/pt-bookcover.jpg)
+background-position: right 50px bottom 50px
+background-size: 25%
+
+# Why E.T. Jaynes
+
+.pull-left[
+- Probability is a foundation of scientific reasoning. Many theories are born of misunderstanding
+
+- Consistent logical expose of Bayesian Statistics from the ground up
+
+- Tribute to Sir Harold Jeffreys
+
+- Excellent series of [video lectures by Aubrey Clayton](https://www.youtube.com/user/elfpower/videos) (whose book "Bernoulli's Fallacy" is [due in spring 2021](https://aubreyclayton.com/bernoulli))
+
+- Challenging but important book to read
+
+### Let's dive in!
+]
+
+---
+class: inverse, center, middle
+
+# Chapter 1
+## Plausible reasoning
+---
+background-image: url(https://www.thesun.ie/wp-content/uploads/sites/3/2020/06/NINTCHDBPICT000590550494.jpg)
+background-position: right 50px bottom 50px
+background-size: 30%
+
+# Plausible vs deductive reasoning
+
+- Policeman and the man in the mask
+    - Gentleman's dishonesty is *plausible* but not certain
+
+- Deductive reasoning (*apodeixis*):
+    - If $A$ is `TRUE` then $B$ is `TRUE`
+        + $A$ is `TRUE`: therefore $B$ is `TRUE`
+        + $B$ is `FALSE`: therefore $A$ is `FALSE`
+
+- Plausible reasoning (*epagoge*):
+    - If $A$ is `TRUE` then $B$ is `TRUE`
+        + $B$ is `TRUE`: therefore $A$ becomes more plausible.
+
+- We need quantitative degree of plausibility
+    - Our brain uses prior information
+    - Pólya principles (“weaker forms of reasoning” in sciences)
+
+---
+# The thinking robot
+
+> *You insist that there is something a machine cannot do. If you will tell me precisely what it is that a machine cannot do, then I can always make a machine which will do just that!*<br>
+> — J. von Neumann
+
+--
+
+### Normative principles of logic
+ - Useful plausible reasoning, following principles expressing an idealized common sense
+ - Desiderata: principles immune to introspection
+
+--
+###Boolean algebra
+
+- Logical *conjunction* (`AND`): $AB$
+- Logical *disjunction* (`OR`): $A+B$
+- Denial of proposition (`NOT`): $\bar{A} \equiv A \text{ is false}$, also $A \equiv \bar{A} \text{ is false}$
+
+Note that $\overline{AB} = AB \text{ is false}$, while $\bar{A}\bar{B}=\text{both }A \text{ and } B \text{ are false}$. This is because $\overline{AB}=\bar{A}+\bar{B}$
+
+---
+#Boolean algebra: basic identities
+$\text{Idempotence:}\hspace{20pt}  \begin{cases}AA=A \\ A+A=A \end{cases}$
+
+$\text{Commutativity:}\hspace{8pt} \begin{cases}AB=BA \\ A+B=B+A \end{cases}$
+
+$\text{Associativity:}\hspace{18pt} \begin{cases}A(BC)=(AB)C=ABC \\ A+(B+C)=(A+B)+C=A+B+C \end{cases}$
+
+$\text{Distributivity:}\hspace{14pt} \begin{cases}A(B+C)=AB+AC \\ A+(BC)=(A+B)(A+C) \end{cases}$
+
+$\text{Duality:}\hspace{42pt} \begin{cases}\text{If }C=AB,\text{ then } \bar{C}=\bar{A}+\bar{B} \\ \text{If }D=A+B,\text{ then } \bar{D}=\bar{A}\bar{B}  \end{cases}$
+
+And more can be derived, such as 
+
+$\text{If }\bar{B}=AD\text{ then }A\bar{B}=\bar{B}\text{ and }B\bar{A}=\bar{A}$
+---
+#Implication
+
+The proposition $A \Rightarrow B$ is to be read as "A implies B" (or "if A then B" or "conditional" in Hamilton (1988)).
+- It does not asset that either $A$ or $B$ is `TRUE`
+- It only means that $A\bar{B}$ is `FALSE`, or, which is the same thing, that $(\bar{A}+B)$ is `TRUE`
+
+However, if $A$ is `FALSE` it says nothing about $B$ and if $B$ is `TRUE` it says nothing about $A$.
+
+--
+
+### Implication as a binary operation
+
+Note! $A \Rightarrow B$ does NOT imply that $B$ is logically deducible from $A$, but merely that $A$ and $AB$ have the same truth value. 
+.pull-left[
+$A$ | $B$ | $A\Rightarrow B$
+----|-----|----------------
+`TRUE`| `TRUE`| `TRUE`
+`TRUE`|`FALSE`|`FALSE`
+`FALSE`|`TRUE`| `TRUE`
+`FALSE`|`FALSE`|`TRUE`
+]
+.pull-righ[
+The difficulty in intrepretation arises when the truth value is assigned to $A\Rightarrow B$ in situations where A is `FALSE`. 
+
+The truth of $A\Rightarrow B$ enables the truth of $B$ to be inferred from the truth of $A$, and nothing in particular to be inferred from the falsity of $A$.
+]
+
+---
+# Adequate set of operations
+
+Combination of basic boolean operators allows construction of complex logical expressions, such as
+$$C\equiv (A+\bar{B})(\bar{A}+A\bar{B})+\bar{A}B(A+B)$$
+Let's solve this:
+
+$C\equiv (A+\bar{B})(\bar{A}+A\bar{B})+\bar{A}B(A+B)\equiv(A+\bar{B})(\bar{A}+A)(\bar{A}+\bar{B})+\bar{A}BA+\bar{A}BB\equiv$
+$(A+\bar{B})(\bar{A}+\bar{B})+\bar{A}B\equiv\bar{B}+A\bar{A}+\bar{A}B\equiv\bar{B}+\bar{A}B\equiv(\bar{B}+\bar{A})(\bar{B}+B)\equiv$
+$(\bar{B}+\bar{A})\equiv (B\Rightarrow \bar{A})$
+
+Generally for $n$ propositions (logical variables) there's $2^n$ such basic functions.
+
+We can show by enumeration that *conjunction*, *disjunction* and *negation* are sufficient to generate all logic functions. The duality property implies that even smaller set of operations will suffice (*disjunction* and *negation*). 
+
+Upon inspection we find that either one of the following can be even more basic building block of logic:
+- $A\uparrow B=\overline{AB}=\bar{A}+\bar{B}$, which is `NAND` operator
+- $A\downarrow B=\overline{A+B}=\bar{A}\bar{B}$, which is `NOR` operator
+
+In fact `NAND` gates are the basic building blocks of semiconductor circuits.
+
+---
+# The basic desiderata
+
+- Representation of degrees of plausibility by real numbers (to compare)
+
+- Qualitative correspondence with common sense 
+
+- Consistency
+
+### Common language vs formal logic
+
+- Sometimes math and common language interpret some words differently. Epistemology (opinion, perception) vs ontology (fact, reality)
+> "The room is noisy" vs "There is noise in the room"
+
+- Interpreting epistemological statements in the ontological meaning is "mind projection fallacy":
+> To interpret the first kind of statement in the ontological sense is to assert that one’s own private thoughts and sensations are realities existing externally in Nature. We call this the ‘mind projection fallacy’
+
+---
+class: inverse, center, middle
+
+# Chapter 2
+## The quantitative rules
+
+---
+# Quantitative rules for inference
+
+Break down the steps required to decide $(AB|C)$ into:
+1. Decide that $B$ is true $(B|C)$;
+1. Having accepted $B$, decide that $A$ is true $(A|BC)$ 
+
+Since for $AB$ to be `TRUE` we need both $A$ and $B$ to be `TRUE`, if $B$ is `FALSE` then $AB$ is automatically `FALSE` as expressed by `A|BC`. 
+
+Therefore, if our robot has $B|C$ and $A|BC$ then it doesn't need $A|C$ as it would tell the robot nothing about $AB|C$ it does not know already. In more general terms:
+
+$$(AB|C)=F[(B|C), (A|BC)]$$
+
+The **Associativity Equation** (Aczél 1966) with proof by Cox (1961)
+
+$$F[F(x,y), z]=F[x, F(y,z)]$$
+$$F(x,y)=w^{-1}[w(x)w(y)]$$
+---
+# The product rule
+
+Associativity and commutativity of the logical product require that relationship take the functional form (eq 2.28 on page 29):
+
+$$w(AB|C)=w(A|BC)w(B|C)=w(B|AC)w(A|C)$$
+Here $w(x)$ must be a positive continuous monotonic function. If $w(x)$ is decreasing $w(x) \in [1, \infty)$, with impossibility represented by $\infty$, then $w_{1}(x)=\frac{1}{w(x)} \in [0,1]$, where certainty is represented by $1$ and impossibility is represented by $0$. This is accepted by convention.
+
+# The sum rule
+
+Starting with the product rule and about 3 pages of derivation later...(eq. 2.60, page 33): $w^{m}(A|B)+w^{m}(\bar{A}|B)=1$ for some positive $m$. Define $p(x)\equiv w^{m}(x)$ and the sum rule becomes:
+
+$$p(A|B)+p(\bar{A}|B)=1$$
+Product rule and sum rule applied continuously can represent plausibility of any Boolean proposition. NB! Exercise 2.1
+---
+# Qualitative properties
+
+Product rule: $p(AB|C)=p(A|C)p(B|AC)=p(B|C)p(A|BC)$
+
+Sum rule: $p(A|B)+p(\bar{A}|B)=1$. 
+
+Product rule (and therefore Bayes’ theorem) expresses simply the associativity and commutativity of Boolean algebra. 
+> Aristotelian deductive logic is the limiting form of our rules for plausible reasoning, as the robot becomes more and
+more certain of its conclusions.
+
+Original plausibility syllogisms also follow from the sum and product rule. Let's take "B is true therefore A is becoming more plausible"
+
+$$A \Rightarrow B$$
+
+Using the product rule $p(A|BC)=\frac{p(AB|C)}{p(B|C)}=p(A|C)\frac{p(B|AC)}{p(B|C)}$. However, since $p(B|AC)=1$ and $p(B|C)<=1$ by definition of the function $p(x)$, therefore 
+
+$$p(A|BC)>=p(A|C)$$
+
+#### B is true therefore A is becoming more plausible
+
+---
+# Numerical values
+
+Jaynes (2003) takes a set of mutually exclusive and exhaustive propositions $[A_1,..., A_n]$ and applies a sum rule and a product rules. Then he defines two problems in which the labels of the first two propositions are swapped. The problems are related through "transformation equations" (eq 2.88 and 2.89 on p.39) and "symmetry equations" (eq 2.90 on p.40), which leads to "group invariance" principle" for assigning plausibility, a corner stone of non-informative priors. Keynes calls the following "the principle of indifference":
+
+$$p(A_i|B)_i=\frac{1}{n}, \qquad (1<=i<=n)$$
+> Instead of saying that $p(x)$ is an arbitrary monotonic function of $x$, it is much more to the point to turn this around and say that: **The plausibility of $x\equiv A|B$ is an arbitrary monotonic function of $p$, defined in $(0<=p<=1)$**. It is $p$ that is rigidly fixed by the data, not $x$.
+
+All plausible reasoning can be carried out in terms of this quantities $p$. We shall call them ***probabilities***. From Laplace's *Théorie Analytique des Probabilités*:
+> The Probability for an event is the ratio of the number of cases favorable to it, to the number of all cases possible when nothing leads us to expect that any one of these cases should occur more than any other, which renders them, for us, equally possible.
+
+---
+# Comments and appendices
+
+- **Subjective vs objective**. Probabilities are describing state of knowledge. 
+> Someone will demand to know: ‘Whose state of knowledge?’ The answer is always: 'That of the robot – or of anyone else who is given the same information and reasons according to the desiderata used in our derivations in this chapter'.
+
+They are objective in a sense of being "independent of the personality".
+
+- **Kolmogorov axioms**. Axiomatized Venn diagrams (set-definition of probability). See Appendix A for details on Kolmogorov system of probability (KSP). Main differences (p.653-654):
+    - No notion of conditional probability. In Jaynes (2003) real-world probabilities are necessarily conditional on information at hand.
+    - Having been "burned by de Finetti" we are wary of infinite sets (unless well-defined well-behaved limiting process exists).
+    
+- **de Finetti probability**. Coherence principle: "...one should assign and manipulate probabilities so that one cannot be made a sure loser in betting based on them". We are concerned not with probabilities people have, but with probabilities they "ought" to have. Consistency includes coherence, not vice versa. 
+> It is the followers of de Finetti who have perpetrated most of the infinite-set paradoxing that has forced us to turn to (and, like Helmholtz in Chapter 16, exaggerate if necessary) the opposite ‘finite-sets’ policy in order to avoid them.
+
+---
+
+class: center, middle
+
+# Thanks!
+
+Slides created via the R packages [**xaringan**](https://github.com/yihui/xaringan),
+[**xaringanExtra**](https://github.com/gadenbuie/xaringanExtra) and [**xaringanthemer**](https://github.com/gadenbuie/xaringanthemer).
+
+The chakra comes from [remark.js](https://remarkjs.com), [**knitr**](http://yihui.name/knitr), and [R Markdown](https://rmarkdown.rstudio.com).
+
+---
+# References
+
+Aczél, J., 1966. Lectures on Functional Equations and their Applications, Academic Press,
+New York.
+
+Cox, R. T., 1961. The Algebra of Probable Inference, Johns Hopkins University Press, Baltimore
+MD.
+
+Hamilton, A.G., 1988. Logic for mathematicians. Cambridge University Press.
+
+Jaynes, E.T., 2003. Probability theory: The logic of science. Cambridge university press.
+
+Keynes, J. M., 1921. A Treatise on Probability, Macmillan, London; reprinted by Harper & Row,
+New York (1962).
+
+
