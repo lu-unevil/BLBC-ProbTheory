@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Bayes@Lund Book Club</title>
+    <meta charset="utf-8" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"ab19e7d9da8b48cc93b9741b6b36e5c4","expires":14}</script>
+    <script src="libs/himalaya/himalaya.js"></script>
+    <script src="libs/js-cookie/js.cookie.js"></script>
+    <link href="libs/editable/editable.css" rel="stylesheet" />
+    <script src="libs/editable/editable.js"></script>
+    <link href="libs/xaringanExtra-extra-styles/xaringanExtra-extra-styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+class: title-slide, inverse, left
+
+background-image: url(fig/pt-bookcover.jpg)
+background-position: right 50px bottom 25px
+background-size: 15%
+
+&lt;style type="text/css"&gt;
+.title-slide .remark-slide-number {
+  display: none;
+}
+&lt;/style&gt;
+
+
+
+<div>
+<style type="text/css">.xaringan-extra-logo {
+width: 110px;
+height: 128px;
+z-index: 0;
+background-image: url(fig/bl_logo.png);
+background-size: contain;
+background-repeat: no-repeat;
+position: absolute;
+top:2em;right:2em;
+}
+</style>
+<script>(function () {
+  let tries = 0
+  function addLogo () {
+    if (typeof slideshow === 'undefined') {
+      tries += 1
+      if (tries < 10) {
+        setTimeout(addLogo, 100)
+      }
+    } else {
+      document.querySelectorAll('.remark-slide-content:not(.title-slide):not(.inverse):not(.hide_logo)')
+        .forEach(function (slide) {
+          const logo = document.createElement('a')
+          logo.classList = 'xaringan-extra-logo'
+          logo.href = 'https://www.lucs.lu.se/bayes/'
+          slide.appendChild(logo)
+        })
+    }
+  }
+  document.addEventListener('DOMContentLoaded', addLogo)
+})()</script>
+</div>
+
+
+
+.h1.f-headline.fw1[
+Probability Theory
+]
+
+.h2.f-subheadline.lh-title[
+The logic of science
+]
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+.f3.lh-title[
+Bayes@Lund Book Club&lt;br&gt;Chapter 3
+]
+
+---
+background-image: url(fig/pt-bookcover.jpg)
+background-position: right 50px bottom 50px
+background-size: 25%
+
+#Chapter 3. Elementary sampling theory
+
+.pull-left[
+
+From the product rule and the sum rule and connotations he derive distributions for 
+
+1. Sampling without replacement
+
+1. Sampling with replacement 
+
+
+*To my surprise, this chapter was fun to read!*
+
+Physical probabilities and propensities
+
+Expectations
+
+Digression: a sermon on reality vs. models
+
+Randomization
+
+
+]
+
+---
+#Sampling theory and the inverse problem
+Sampling theory help us to derive the probability for data given what we know about the system?
+
+Often, we have the inverse problem, i.e. given the data D, what is the probability that some specified hypothesis H is true?
+
+A good way to answer this question is to ask what do we know about data given the hypothesis (the contents M and N) 
+
+
+---
+#Sampling distributions
+
+Given some hypothesis H about the phenomenon being observed, what is the probability that we hall obtain some specified data D?
+
+Sampling distributions make predictions.
+
+Failure to understand the logic of these simplest applications has been one of the major factors 
+retarding the progress of scientific inference – and therefore of science itself – for many
+decades.
+
+## The urn model
+Given background knowledge of drawing balls from an urn with M red and N-M white balls, what is the probability to get some specific sequence of red and white balls? 
+
+First nonobvious symmetry: the robot's probability for a red at any draw, if it does not know the result of any other draw, is always the same as the Bernoulli urn result
+---
+# Sampling without replacement
+![](fig/snip1.png)
+
+A is "exactly r red balls in n draws, in any order"
+
+h(r) abbreviation of h(r|N,M,n)=P(A|B)
+
+r follows the hypergeometric distribution
+
+---
+# Sampling distributions
+
+## Some terminology
+h(r) abbreviation of h(r|N,M,n) = P(A|B)
+
+H(R) is the cumulative probability function sum of h(r) 
+
+H(x) is the staircase function H(x) = H(INT(x))
+
+strictly - median is the values on R for which H(R-1)=1-H(R) 
+
+---
+# Exchangeability
+
+Exchangeable distributions - holds whenever the probability for a sequence of events is independent of their order
+
+The hypergeometric distribution is exchangeable because every draw must have just the same relevance to every other draw, regardless of their time order and regardless of whether they are near or far apart in the sequence
+
+# Expectations
+Like most of the standard terms that arose out of the distant past, the term "expectation" seems singularly inappropriate to us; for it is almost never a value that anyone "expects" to find and is often known to be an impossible value. 
+
+We adhere to it because of centuries of precedent.
+
+---
+# The urn analogy 
+Drawing from an urn is a useful conceptual device
+
+The urn analogy is particularly apt
+- recording counts from a radioactive source, survey sampling and industrial quality control testing, or literally drawing from a real, finite population
+
+There could be a vague resemblance to the urn problem
+- agricultural experiments or testing the effectiveness of a new procedure, i.e. designed experiments
+
+The urn analogy seems so farfetched as to be dangerously misleading 
+- making repeated measurements of the temperature or determining the weight of a baby
+
+Yet in much of the literature one still uses urn distributions to represent the data probabilities. The main consequence of this is strict independence of successive draws, but if this is not correct, the conclusions are erroneous.
+
+---
+#The frequency interpretation
+Some claims that these distributions represent not just our prior state of knowledge about the data, but the actual long-run variability of the data in such experiments.
+
+Clearly, such a belief cannot be justified; anyone who claims to know in advance the long-run results in an experiment that has not been performed is drawing on a vivid imagination, not on any fund of actual knowledge of the phenomenon.
+
+Indeed, if that infinite population is only imagined, then it seems that we are free to imagine any population we please.
+
+To suppose that the resulting probability assignments have any real physical meaning is just another form of the mind projection fallacy. 
+
+To restrict probability theory to problems of physical causation is to lose its most important applications
+---
+# The urn analogy 
+Yet in much of the literature one still uses urn distributions to represent the data probabilities. The main consequence of this is strict independence of successive draws, but if this is not correct, the conclusions are erroneous.
+
+It is often assumed that the distributions represent not just our prior state of knowledge about the data, but the actual long-run variability of the data in such experiment.
+
+---
+# Probabilites as logic
+How can we argue that the probability for the first ball to be red is M over N?
+
+1. First - probability describes a state of knowledge
+
+2. Later - we want to show how we can say that this probability is a prediction of a physical property with high confidence
+
+---
+#Casual physical influences vs logical connections
+Probabilistic reasoning from some specified hypothesis to potentially observable data.
+
+The link between hypothesis and data can be logical or causal.
+
+Knowledge of later events is relevant to the probabilities of earlier ones. 
+
+Second nonobvious symmetry: Information about later events has the same effect on our state of knowledge as earlier ones. 
+
+--
+
+Penrose (1979) - physical causation: statistical mechanics
+- fundamental axiom that probabilities referring to the present time can depend only on what happened easier, not on what happens later. 
+- considers this to be a necessary physical condition of "causality" - in the ‘physical probability’ theory it is not even considered legitimate to speak of the probability for an outcome at a specified trial
+
+Popper (1957)- propensity theory
+
+---
+#Sampling with replacement - a sermon 
+
+Sampling without replacement - a simple but important problem
+
+Difficult problem - so complicated that it is not worth anybody's time to think about it. Instead use a clever trick: 
+
+Solve the problem anyway by:
+1. making it still harder
+1. redefining what we mean by "solving" it, so that it becomes something we can do
+1. inventing a dignified and technical-sounding word to describe this procedure, which has the psychological effect of concealing the real nature of what we have done, and making it appear respectable. 
+
+--
+
+In the case of sampling with replacement, we apply this strategy as follows.
+1. Suppose that, after tossing the ball in, we shake up the urn. However complicated the problem was initially, it now becomes many orders of magnitude more complicated, because the solution now depends on every detail of the precise way we shake it, in addition to all the factors mentioned above.
+1. We now assert that the shaking has somehow made all these details irrelevant, so that the problem reverts back to the simple one where the Bernoulli urn rule applies.
+1. We invent the dignified-soundingword randomization to describe what we have done. This term is, evidently, a euphemism, whose real meaning is: deliberately throwing away relevant information when it becomes too complicated for us to handle.
+
+---
+#Randomization
+We have described this procedure in laconic terms, because an antidote is needed for the impression created by some writers on probability theory, who attach a kind of mystical significance to it. 
+
+For some, declaring a problem to be ‘randomized’ is an incantation with the same purpose and effect as those uttered by an exorcist to drive out evil spirits; i.e. it cleanses their subsequent calculations and renders them immune to criticism.
+
+We agnostics often envy the True Believer, who thus acquires so easily that sense of security which is forever denied to us.
+
+--
+
+Shaking a fish bowl TV-show lottery - to whom is this unfair? What does shaking accomplish?
+
+Shaking doesnt make the result "random", the term is basically meaningless as an attribute of the real world. Randomness is not a real property in Nature. 
+Instead - I dont know the detailed causes and therefore Nature doesnt know them.  
+Shaking ensures that no human is able to exert any willful influence on the result and no one can be charged with fixing the outcome. 
+
+---
+#Limit theorems
+He object to the belief that randomization makes equations exact, while they should in fact be approximate. 
+
+As a consequence, derivation of limit theorems are not true in real repetitive experiments. 
+
+Mathematicians generally regard these limit theorems as the most important and sophisticated fruits of probability theory, and have a tendency to use language which implies that they are proving properties of the real world.
+
+His point is that central limit theorems are valid properties of the abstract and mathematical model that was defined and analyzed. A relevant question to ask is "to what extent does that model resemble the real world?"
+
+---
+#Randomization is useful
+After this sermonizing, we are going to go ahead and use the randomized solution like everybody else does.
+
+The procedure to use randomization is ok as long as we acknowledge honestly what we are doing, i.e. instead of solving the real problem, we are making a practical compromise and being, of necessity, content with an approximate solution. 
+
+In each of the applications to follow, one must consider whether the experiment is really ‘like’ drawing from an urn; if it is not, then we must go back to first principles and apply the basic product and sum rules in the new context. This may or may not yield the urn distributions.
+
+---
+#Sampling with replacement
+
+A sampling distribution for sampling with replacement is derived by adjusting the urn analogy model to include correlations between draws
+
+A model for correlations - drawing and replacing a red ball increases the probability for a red one at the next draw by some small amount `\(\epsilon\)` &gt; 0, while drawing and replacing a white one decreases the probability for a red one at the next draw by a small quantity `\(\delta\)` &gt; 0. 
+
+The effect of all but the latest draw is negligible
+
+The distribution is derived by looking at the problem as a Markov process 
+
+---
+# Thanks!
+
+Slides created via the R packages [**xaringan**](https://github.com/yihui/xaringan),
+[**xaringanExtra**](https://github.com/gadenbuie/xaringanExtra) and [**xaringanthemer**](https://github.com/gadenbuie/xaringanthemer).
+
+The chakra comes from [remark.js](https://remarkjs.com), [**knitr**](http://yihui.name/knitr), and [R Markdown](https://rmarkdown.rstudio.com).
+
+---
+# References
+
+Jaynes, E.T., 2003. Probability theory: The logic of science. Cambridge university press.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
