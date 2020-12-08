@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Bayes@Lund Book Club</title>
+    <meta charset="utf-8" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"xbb98a22207943ad8dcb9f5ceb79f430","expires":14}</script>
+    <script src="libs/himalaya/himalaya.js"></script>
+    <script src="libs/js-cookie/js.cookie.js"></script>
+    <link href="libs/editable/editable.css" rel="stylesheet" />
+    <script src="libs/editable/editable.js"></script>
+    <link href="libs/xaringanExtra-extra-styles/xaringanExtra-extra-styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+class: title-slide, inverse, left
+
+background-image: url(fig/pt-bookcover.jpg)
+background-position: right 50px bottom 25px
+background-size: 15%
+
+&lt;style type="text/css"&gt;
+.title-slide .remark-slide-number {
+  display: none;
+}
+&lt;/style&gt;
+
+
+
+<div>
+<style type="text/css">.xaringan-extra-logo {
+width: 110px;
+height: 128px;
+z-index: 0;
+background-image: url(fig/bl_logo.png);
+background-size: contain;
+background-repeat: no-repeat;
+position: absolute;
+top:2em;right:2em;
+}
+</style>
+<script>(function () {
+  let tries = 0
+  function addLogo () {
+    if (typeof slideshow === 'undefined') {
+      tries += 1
+      if (tries < 10) {
+        setTimeout(addLogo, 100)
+      }
+    } else {
+      document.querySelectorAll('.remark-slide-content:not(.title-slide):not(.inverse):not(.hide_logo)')
+        .forEach(function (slide) {
+          const logo = document.createElement('a')
+          logo.classList = 'xaringan-extra-logo'
+          logo.href = 'https://www.lucs.lu.se/bayes/'
+          slide.appendChild(logo)
+        })
+    }
+  }
+  document.addEventListener('DOMContentLoaded', addLogo)
+})()</script>
+</div>
+
+
+
+.h1.f-headline.fw1[
+Probability Theory
+]
+
+.h2.f-subheadline.lh-title[
+The logic of science
+]
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+.f3.lh-title[
+Bayes@Lund Book Club&lt;br&gt;Chapter 5
+]
+
+---
+background-image: url(fig/pt-bookcover.jpg)
+background-position: right 50px bottom 50px
+background-size: 25%
+
+#Chapter 5. Queer uses for probability theory
+
+---
+#Chapter 5. 
+The most familiar problems may be so complicated – just because the result depends on so many unknown and uncontrolled factors – that a full Bayesian analysis, although correct in principle, is out of the question in practice
+
+Bayes’ theorem remains the normative principle telling us what we should aim for.
+
+Without it, we have nothing to guide our choices and no criterion for judging their success.
+
+Generations of workers in this field have not comprehended the fact that Bayes’ theorem is a valid theorem required by elementary desiderata of rationality and consistency, and have made unbelievably persistent attempts to replace it by all kinds of intuitive ad hockeries
+---
+#Examples of queer uses of Bayes-Laplace methods
+
+Normal-approximations 
+
+Hypothesis testing
+
+Mrs Smith's extrasensory perception 
+
+Discovery of Uranus
+
+Test of Newtonian theory
+
+Horce racing and weather forecasts 
+
+Hempel's paradox
+
+---
+#Recapitulation 
+
+
+##Bayes-Laplace reasoning 
+
+Probability: `\(P(D|HX)\)` and `\(P(D|\overline{H}X)\)`
+
+Odds: `\(O(H|DX)=\frac{P(D|HX)}{P(D|\overline{H}X)}\)`
+
+Evidence: `\(e(H|X)=10log_{10}O(H|DX)\)`
+
+An `\(e\)` on -30 db corresponds to a disbelief in `\(H\)`
+
+---
+#Mrs Stewart extrasensory perception?
+.pull-left[
+`\(n = 37100\)` trials
+
+Mrs Stewart guessed correctly `\(r=9410\)` times
+
+Random guess (null hypothesis) probability correct in one trial `\(p=0.2\)`
+
+Alternative hypothesis is chosen to be "the one with the highest likelihood", i.e. `\(f = \frac{r}{n}=0.2536\)`
+
+
+```r
+n = 37100 #trials
+r = 9410 #correct guesses
+1-pbinom(r,n,0.2)
+```
+
+```
+## [1] 0
+```
+
+```r
+dbinom(r,n,0.2)
+```
+
+```
+## [1] 2.007619e-139
+```
+]
+
+.pull-right[
+&lt;img src="BLBC-ProbabilityTheory-Session4_chapter5_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+
+
+```r
+dbinom(r,n,0.2536)
+```
+
+```
+## [1] 0.004759622
+```
+
+```r
+10*log10(dbinom(r,n,0.2536)/dbinom(r,n,0.2))
+```
+
+```
+## [1] 1363.749
+```
+]
+---
+#The number of hypothesis matters
+
+##Bayes theorem 
+
+`\(H_f\)` and `\(H_p\)` (the null hypothesis)
+
+`\(P(H_f|DX)=P(H_f|X)\frac{P(D|H_fX)}{P(D|X)}=\frac{P_fL_f}{P_fL_f+P_pL_p}\)`
+
+`\(+\)` alternative or deception hypothesis `\(i=1,...,n\)`
+
+`\(P(H_f|DX)=\frac{P_fL_f}{P_fL_f+P_pL_p+\sum P_iL_i}\)`
+
+Let `\(L_i \approx L_f\)`, and `\(P_pL_p\)` is very small, then 
+
+`\(\sum P_i \ll P_j\)`
+
+must hold for `\(H_f\)` to be highly plausible.
+
+---
+#Deception hypotheses
+
+```r
+p_f = 10^-30
+p_f*dbinom(r,n,0.2536)/(p_f*dbinom(r,n,0.2536)+(1-p_f)*dbinom(r,n,0.2))
+```
+
+```
+## [1] 1
+```
+
+```r
+p_f = 10^-300
+p_f*dbinom(r,n,0.2536)/(p_f*dbinom(r,n,0.2536)+(1-p_f)*dbinom(r,n,0.2))
+```
+
+```
+## [1] 2.37078e-164
+```
+With deception hypotheses, assume equal likelihood and prior probability
+
+```r
+p_f = 10^-30
+p_d = p_f
+p_f*dbinom(r,n,0.2536)/(p_f*dbinom(r,n,0.2536)+(1-p_f-p_d)*dbinom(r,n,p0)+
+                          (p_d)*dbinom(r,n,0.2536))
+```
+
+```
+## [1] 0.5
+```
+
+---
+#Deception hypotheses
+
+```r
+p_f = 10^-30
+p_d = p_f
+p_f*dbinom(r,n,0.2536)/(p_f*dbinom(r,n,0.2536)+(1-p_f-p_d)*dbinom(r,n,p0)+
+                          (p_d)*dbinom(r,n,0.2536))
+```
+
+```
+## [1] 0.5
+```
+
+
+```r
+p_f = 10^-30
+p_d = p_f/10
+p_f*dbinom(r,n,0.2536)/(p_f*dbinom(r,n,0.2536)+(1-p_f-p_d)*dbinom(r,n,p0)+
+                          (p_d)*dbinom(r,n,0.2536))
+```
+
+```
+## [1] 0.9090909
+```
+
+
+```r
+p_f = 10^-300
+p_d = p_f
+p_f*dbinom(r,n,0.2536)/(p_f*dbinom(r,n,0.2536)+(1-p_f-p_d)*dbinom(r,n,p0)+
+                          (p_d)*dbinom(r,n,0.2536))
+```
+
+```
+## [1] 2.37078e-164
+```
+
+---
+#Choosing hypotheses
+
+There is a continuum of alternative hypothesis – using two hypotheses is naïve
+
+When in doubt, use the device of imaginary results (I. J. Good)
+
+Recognition of a seemingly trivial alternative can make many orders of magnitude difference in the conclusions
+
+Assume likelihood for deceptive hypothesis similar to the first alternative hypothesis. If so, the belief in the deceptive must be smaller than the belief in the alternative in order for the posterior probability of alternative to be high. 
+
+To use probability theory calculus, the imaginary alternative and data are to be such that you can calculate the probability `\(P(D|H)\)`
+
+---
+#Divine Providence
+
+Arbuthnot 1710 studied 82 years of demographic data. More boys than girls were born.
+
+Null hypothesis equal probability for a boy. Possibility -247 db. 
+
+He saw this as evidence for “Divine Providence”. 
+
+This is not a specific hypothesis, because it does not help us to assign any probability for data. 
+
+`\(H_1 = \overline H_0\)` is also not possible for the same reason. 
+
+Without having the probability `\(P(D|H1)\)` of the data on the alternative hypothesis and the prior probabilities of the hypothesis, there is just no well-posed problem and no rational basis for passing judgment. 
+
+Alternatives are needed before we have any rational criterion for testing hypotheses
+
+
+---
+#Adhockery 
+
+*ad hoc* procedures that are in conflict with the rules of probability theory 
+
+![](fig/adhoc.png)
+
+![](fig/adhoc2.png)
+
+---
+#Formulating new hypthesis and the use of Bayes-Laplacian methods 
+
+![](fig/adhoc3.png)
+
+![](fig/adhoc4.png)
+
+---
+#Doubts and confirmation biases
+
+A strong conclusion e.g. good performance of a method to analyse free decay NMR signals, were met with doubts. 
+
+A person may tell the truth and not be believed, even though the disbelievers are reasoning in a rational, consistent, way.
+
+Convergence of beliefs does not always happen in practice. Prejudices seem to be strengthened by new information which ought to have the opposite effect. 
+
+Kahneman and Tversky (1972) concludes that as arguments against Bayesian methods. 
+
+Jaynes shows that probability theory as logic can reproduce and explain this phenomenon
+---
+# Converging and diverging views
+.pull-left[
+Three persons A, B and C beliefs that a drug is unsafe. 
+
+A and C are believers in the safety of the drug, B is a disbeliever. 
+
+P(safe) - A: 0.9, B: 0.1, C: 0.9
+
+They have different likelihoods, because they have different views about the reliability of the information provided. 
+
+P(claimed unsafe|safe) - A: 0.01, B: 0.3, C: 0.99
+]
+
+.pull-right[
+
+```
+## Warning: package 'ggplot2' was built under R version 4.0.3
+```
+
+![](BLBC-ProbabilityTheory-Session4_chapter5_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+]
+---
+#Converging and diverging experts
+.pull-left[
+Kahneman and Tversky: People are not thinking like the Bayesian principles. 
+
+Jaynes: People are reasoning according to a more sophisticated version of Bayesian inference (with different likelihoods)
+
+The importance of including the relevant background information `\(S\)`
+
+`\(S:=\)` fully adequate precautions against error or deception were taken, and Mrs Stewart did in fact deliver that phenomenal performance.
+]
+
+.pull-right[
+![](fig/ABC.png)
+]
+
+---
+
+![](fig/amesroom.jpeg)
+
+---
+![](fig/cantril.jpg)
+
+
+---
+
+#Inference
+
+Seeing is not a direct apprehension of reality, as we often like to pretend. 
+
+Quite the contrary: seeing is inference from incomplete information. 
+
+The failures of perception revealed by the experiments of Ames and Cantrell are not mechanical failures in the lens, retina, or optic nerve; they are reactions of the subsequent inference process in the brain when it receives new data that are inconsistent with its prior information. 
+
+---
+#Newtonian theory and the discovery of Uranus
+T: Newtonian theory (laws of mechanics and gravitation) 1687
+
+Uranus discovered 1781
+
+Beginning of 1800 observation that Uranus did not follow the path prescribed by the Newtonian theory 
+
+T is false was -50 db. Did not go down, instead…
+
+There must be another planet beyond Uranus whose gravitational pull is causing the discrepancy - An alternative hypothesis down at perhaps -20 db was resurrected 
+
+N: Neptune was found with the help of the predictions made by Leverrier 1846 
+
+Did this increase plausibility for the Newtonian theory? 
+
+It depends entirely on against which specific alternatives we are testing Newton’s theory 
+
+---
+#What to blame?
+
++ Polya - objection against Bayes-Laplace methods, but used a faulty model 
+
++ RCJ – Richard C Jeffrey (not Sir Harold Jeffreys), Horse racing and weather forecasting, Uncertainty in new information
+
+In the literature there are perhaps 100 ‘paradoxes’ and controversies which are like this, in that they arise from faulty intuition rather than faulty mathematics. 
+
+Someone asserts a general principle that seems to him intuitively right. 
+
+Then, when probability analysis reveals the error, instead of taking this opportunity to educate his intuition, he reacts by rejecting the probability analysis.
+
+---
+# Thanks!
+
+Slides created via the R packages [**xaringan**](https://github.com/yihui/xaringan),
+[**xaringanExtra**](https://github.com/gadenbuie/xaringanExtra) and [**xaringanthemer**](https://github.com/gadenbuie/xaringanthemer).
+
+The chakra comes from [remark.js](https://remarkjs.com), [**knitr**](http://yihui.name/knitr), and [R Markdown](https://rmarkdown.rstudio.com).
+
+---
+# References
+
+Jaynes, E.T., 2003. Probability theory: The logic of science. Cambridge university press.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
