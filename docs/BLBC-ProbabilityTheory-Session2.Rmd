@@ -26,6 +26,7 @@ background-size: 15%
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
+options(htmltools.preserve.raw = FALSE)
 library(RefManageR)
 ```
 

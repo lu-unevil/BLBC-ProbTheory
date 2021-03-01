@@ -1,0 +1,261 @@
+---
+title: "Bayes@Lund Book Club" # this will only be show in share-along
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    lib_dir: libs
+    seal: false
+    nature:
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+class: title-slide, inverse, left
+
+background-image: url(fig/pt-bookcover.jpg)
+background-position: right 50px bottom 25px
+background-size: 15%
+
+```{css, echo = FALSE}
+.title-slide .remark-slide-number {
+  display: none;
+}
+```
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+options(htmltools.preserve.raw = FALSE)
+library(RefManageR)
+```
+
+```{r xaringan-extra-all-the-things, echo=FALSE}
+library(xaringanExtra)
+xaringanExtra::use_xaringan_extra(
+  c("tile_view", "panelset", "editable", 
+    "animate", "tachyons")
+)
+
+xaringanExtra::use_tachyons()
+
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,         #<<
+  mute_unhighlighted_code = TRUE  #<<
+)
+
+xaringanExtra::use_logo("fig/bl_logo.png",
+                        link_url = "https://www.lucs.lu.se/bayes/",
+                        position=css_position(top = "1em", right = "1em"))
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(base_color = "#1c4281",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "300", "300i"),
+  code_font_google   = google_font("Fira Mono")
+)
+```
+
+.h1.f-headline.fw1[
+Probability Theory
+]
+
+.h2.f-subheadline.lh-title[
+The logic of science
+]
+
+<br><br><br><br><br>
+.f3.lh-title[
+Bayes@Lund Book Club<br>Chapter 6
+]
+<br>
+Part 1
+
+---
+background-image: url(fig/pt-bookcover.jpg)
+background-position: right 50px bottom 50px
+background-size: 25%
+
+# Quick recap of Chapters 1-5
+
+.pull-left[
+- Deductive vs plausible reasoning. The logical robot. Desiderata for plausibility reasoning
+
+- Quantitative rules (product rule and sum rule).
+
+- Sampling without replacement. Expectations. Binomial distribution. Sampling with replacement (+ corrections for correlations).
+
+- Prior probabilities. Multiple hypothesis testing. Continuous distributions (infinite number of hypotheses).
+
+- Queer uses for probability theory (telepathic powers, discovery of Neptune, horce racing, weather forecasting)
+
+### Let's jump in!
+]
+
+---
+class: inverse, center, middle
+
+# Chapter 6
+## Elementary parameter estimation
+---
+background-image: url(fig/ch6-urn.png)
+background-position: right 50px bottom 100px
+background-size: 25%
+
+# Parameter estimation $\approx$ hypothesis testing
+
+- From choosing hypotheses to estimating parameters:
+  - Many (many!) hypotheses indexed by $t$ so $H_t, (1\leq t \leq n )$. 
+  - Instead of choosing $H_t$ say that $t$ is a quantity of interest.
+
+- In earlier chapters: "pre-data" problem
+    - $N$ balls in urn, of them $R$ are red (rest are white)
+    - Draw $n$. What mix of red $(r)$ to white $(n-r)$ can we expect?
+
+- Now: "post-data" problem.
+    - We know $n$ and $r$. What can we say about $N$ and $R$?
+
+- Likelihood of seeing $r$ on $n$ draws (without replacement)
+
+$p(D|NRI)=h(r|NR,n)=\dbinom{N}{n}^{-1}\dbinom{R}{r}\dbinom{N-R}{n-r}$,
+
+where $I$ is background information is represented by a hypergeometric distribution
+---
+# Parameter independence
+
+We're interested in estimating both $N$ and $R$. Being able to draw $n$ balls implies at least that $N \geq n$. Does drawing $r$ red balls tell us anything about $N$? Joint posterior for $N$ and $R$:
+
+$$p(NR|DI)=p(N|I)p(R|NI)\frac{p(D|NRI)}{p(D|I)}$$
+where prior $p(NR|I)$ has been decomposed (factored) using the product rule. The "normalizing" denominator is then:
+
+$$p(D|I)=\sum_{N=0}^{\infty}\sum_{R=0}^{N}p(N|I)p(R|NI)p(D|NRI)$$
+
+General condition is that data tells us nothing about $N$ (except truncating $N<n$):
+
+$$p(D|NI)=\sum_{R=0}^{N}p(D|NRI)p(R|NI)=\begin{cases}\begin{aligned}&f(n,r), &\text{if }N\geq n\\&0, &\text{if } N<n  \end{aligned}\end{cases}=f(n,r)\dbinom{N}{n}$$
+
+Mathematical constraint on $p(R|NI)$ is that $f(n,r)$ is independent of $N$, when $N>n$.
+
+---
+#Closer look at the prior
+
+In $p(NR|DI)=p(N|DI)p(R|NDI)$ our main concern is inferences about $R$ or $R/N$ where $N$ is known. Posterior for $R$ then:
+$$p(R|DNI)=p(R|NI)\frac{p(D|NRI)}{p(D|NI)}$$
+
+### Uniform prior
+
+Consider prior knowledge $I_0$: absolute ignorance about $R$ while knowing $N$ (uniform distribution):
+$$p(R|NI_0)=\begin{cases}\begin{aligned} &\frac{1}{N+1} &\text{if } 0 \leq R \leq N, \\&0 &\text{if }R>N,  \end{aligned}\end{cases}=\frac{1}{n+1}\dbinom{N}{n}$$
+And correctly normalized posterior
+$$p(R|DNI_0)=\dbinom{N+1}{n+1}^{-1}\dbinom{R}{r}\dbinom{N-R}{n-r}$$
+
+---
+#Posterior probability estimate
+
+What is the "most probable" value of $R$? Let's find expectation of R over the posterior distribution
+$$\langle R\rangle=E(R|DNI_0)=\sum_{R=0}^{N}Rp(R|DNI_0)$$
+Solving this 
+$$\langle R\rangle+1=(r+1)\dbinom{N+1}{n+1}^{-1}\dbinom{N+2}{n+2}=\frac{(N+2)(r+1)}{(n+2)}$$
+And most notably, the number of red balls left in the urn after drawing
+$$\langle F\rangle=\frac{\langle R\rangle-r}{N-n}=\frac{r+1}{n+2}$$
+---
+# Predictive distribution
+
+Define drawing red on i-th draw: $R_i \equiv \text{red on the }i\text{-th draw}, \quad 1\leq i \leq N$.
+After having drawn a sample of $r$ red balls in $n$ draws, what is the probability that the next one drawn will be red?<sup>1</sup>
+
+$$p(R_{n+1}|DNI_0)=\sum_{R=0}^{N}p(R_{n+1}R|DNI_0)=\sum_{R=0}^{N}p(R_{n+1}|RDNI_0)p(R|DNI_0)=\frac{r+1}{n+2}$$
+> "A probability is not the same thing as a frequency; but, under quite general conditions, the predictive probability of an event at a single trial is numerically equal to the expectation of its frequency in some specified class of trials."
+
+What accuracy can be claimed for the estimate of $R$? This can be estimated with *variance* $var(R)$.
+$$var(R=\frac{p(1-p)}{n+3}(N+2)(N-n)$$
+Note the $(N-n)$: as the sample approaches $N$, we get more accurate estimate, until $var(R)$ shrinks to 0. Estimate of remaining red balls is
+$$(F)_{est}=p\pm\sqrt{\frac{p(1-p)}{n+3}}$$
+
+.footnote[[1] "Laplace's rule of succession"]
+---
+# Examples
+
+> News reported that a "random poll" of 1600 voters was taken, indicating that 41% of the population favored a certain candidate in the next election, and claiming a ±3% margin of error for this result
+
+For $(F)_{est}=\langle F \rangle(1\pm 0.03)$ we need a sample $n+3=\frac{1-p}{p}\frac{1}{(0.03)^2}=\frac{1-0.41}{0.41}\times 1111=1598.9$ or $n=1596$
+
+### Truncated uniform prior
+
+Suppose, our prior information $I_1$ is that $0<R<N$, i.e. there's at least 1 red and 1 white ball in the urn. Prior:
+$$p(R|NI_1)=\begin{cases}\begin{aligned}&\frac{1}{N-1},  &\text{if }1 \leq R \leq N-1\\&0 &\text{otherwise} \end{aligned} \end{cases}$$
+
+But our posterior is still 
+$$p(R|DNI_1)=p(R|DNI_0), \quad 0 < r < n$$
+
+>Different priors do not necessarily lead to different conclusions; and whether they do or do not can depend on which data set we happen to get.
+
+---
+# Concave prior
+
+Remember from Laplace's rule of succession probability of getting red on the next draw was
+$$\frac{r+1}{n+2}=\frac{n(r/n)+2(1/2)}{n+2}$$
+Which looks like weighted average of fraction $r/n$ and prior expectation of $1/2$. Uniform prior carries a weight corresponding to 2 observations. Can there be even less informative prior? We need prior that would lead to unform posterior, a "pre-prior".
+
+$$p(R|DNI_{00})=p(R|NI_1)=\frac{1}{N-1}, \quad 1 \leq R \leq N-1$$
+Concave priors are useful, but they demonstrate instability when $N \rightarrow \infty$, as they become non-normalizable.
+
+---
+background-image: url(fig/ch6-monkeys.png)
+background-position: right 30px bottom 170px
+background-size: 20%
+
+# Binomial monkey prior
+
+Suppose we have a prior information $I_2$ that the urn was filled by a team of monkeys. Each ball had an equal chance $g$ of being red. Then our prior would be:
+
+
+$$p(R|NI_2)=\dbinom{N}{R}g^R(1-g)^{N-R}, \quad 0 \leq R \leq N$$
+Then our likelihood would be:
+
+$$p(D|NI)=\dbinom{n}{r}g^r(1-g)^{n-r}$$
+Since likelihood is independent of $N$ we can factor the joint posterior. Normalized posterior: 
+
+$$p(R|DNI_2)=\dbinom{N-n}{R-r}g^{R-r}(1-g)^{N-R-n+r}$$
+Estimated fraction of red balls left in the urn (OBS! binomial prior nullifies the data!)
+$$\frac{(R-r)_{est}}{N-n}=g \pm \sqrt{\frac{g(1-g)}{N-n}}$$
+---
+# How come?
+
+>Comparing the binomial prior with the uniform prior, one would suppose that the binomial prior, being moderately peaked, expresses more prior information about the proportion $R/N$ of red balls; therefore by its use one should be able to improve his estimates of $R$
+
+Given that filling mechanism, then knowing that any given ball is in fact red, gives one no information whatsoever about any other ball (each ball had independent probability $g$ of being red). That is, $P(R_1R_2|I) = P(R_1|I)P(R_2|I)$. This logical independence in the prior is preserved in the posterior distribution.
+
+### Question: Does the appearance of a binomial distribution already imply logical independence of the separate events?
+
+
+---
+
+class: center, middle
+
+# See you next time!
+
+Slides created via the R packages [**xaringan**](https://github.com/yihui/xaringan),
+[**xaringanExtra**](https://github.com/gadenbuie/xaringanExtra) and [**xaringanthemer**](https://github.com/gadenbuie/xaringanthemer).
+
+The chakra comes from [remark.js](https://remarkjs.com), [**knitr**](http://yihui.name/knitr), and [R Markdown](https://rmarkdown.rstudio.com).
+
+---
+# References
+
+Aczél, J., 1966. Lectures on Functional Equations and their Applications, Academic Press,
+New York.
+
+Cox, R. T., 1961. The Algebra of Probable Inference, Johns Hopkins University Press, Baltimore
+MD.
+
+Hamilton, A.G., 1988. Logic for mathematicians. Cambridge University Press.
+
+Jaynes, E.T., 2003. Probability theory: The logic of science. Cambridge university press.
+
+Keynes, J. M., 1921. A Treatise on Probability, Macmillan, London; reprinted by Harper & Row,
+New York (1962).
+
+
