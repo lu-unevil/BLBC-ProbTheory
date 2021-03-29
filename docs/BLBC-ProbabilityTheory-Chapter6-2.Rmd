@@ -1,0 +1,269 @@
+---
+title: "Bayes@Lund Book Club" # this will only be show in share-along
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    lib_dir: libs
+    seal: false
+    nature:
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+class: title-slide, inverse, left
+
+background-image: url(fig/pt-bookcover.jpg)
+background-position: right 50px bottom 25px
+background-size: 15%
+
+```{css, echo = FALSE}
+.title-slide .remark-slide-number {
+  display: none;
+}
+```
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+options(htmltools.preserve.raw = FALSE)
+library(RefManageR)
+```
+
+```{r xaringan-extra-all-the-things, echo=FALSE}
+library(xaringanExtra)
+xaringanExtra::use_xaringan_extra(
+  c("tile_view", "panelset", "editable", 
+    "animate", "tachyons")
+)
+
+xaringanExtra::use_tachyons()
+
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,         #<<
+  mute_unhighlighted_code = TRUE  #<<
+)
+
+xaringanExtra::use_logo("fig/bl_logo.png",
+                        link_url = "https://www.lucs.lu.se/bayes/",
+                        position=css_position(top = "1em", right = "1em"))
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(base_color = "#1c4281",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "300", "300i"),
+  code_font_google   = google_font("Fira Mono")
+)
+```
+
+.h1.f-headline.fw1[
+Probability Theory
+]
+
+.h2.f-subheadline.lh-title[
+The logic of science
+]
+
+<br><br><br><br><br>
+.f3.lh-title[
+Bayes@Lund Book Club<br>Chapter 6
+]
+<br>
+Part 2
+
+---
+background-image: url(fig/pt-bookcover.jpg)
+background-position: right 50px bottom 50px
+background-size: 25%
+
+# Quick recap of Chapter 6 (so far)
+### Elementary parameter estimation
+.pull-left[
+- Inverted urn problem: from "pre-data" (*D* is unknown) to "post-data" (*N* and *R* are unknown)
+
+- Predictive distribution: "probability of the next draw"
+
+- Priors: truncated uniform, "concave prior"
+
+- Binomial monkey prior: independent events
+
+> Does the appearance of a binomial distribution already imply logical independence of the separate events?
+
+### Let's jump in!
+]
+
+---
+class: inverse, center, middle
+
+# Chapter 6
+## Elementary parameter estimation
+### Metamorphosis into continuous parameter estimation
+---
+# Estimation with binomial sampling
+
+When hypotheses become so "dense" it is difficult to distinguish between them, then we can think of an index $t$ as a continuously variable parameter $\theta$. The problem becomes that of estimating the parameter $\theta$ and making statements about the accuracy of the estimate.
+
+### Bernoulli trials
+
+$$x_i \equiv \begin{cases} 1 \quad \text{if the }i\text{th trial yields success}\\0 \quad \text{otherwise} \end{cases}$$
+
+Data: $D \equiv \{x_1,\dots,x_n\}$. Prior information $I$: parameter $\theta$ such that at each trial, probability for success is $\theta$ and for failure $(1-\theta)$.
+
+Sampling distibution for $r$ number of successes observed in $n$ trials then:
+
+$$p(D|\theta I)=\prod_{i=1}^{n}p(x_i|\theta I)= \theta^r(1-\theta)^{n-r}$$
+---
+# Estimation with binomial sampling
+
+Posterior ($A$ is a normalizing constant):
+
+$$p(\theta|DI)=p(\theta|I)\frac{p(D|\theta I)}{\int d\theta p(\theta|I)p(D|\theta I)}=Ap(\theta|I)\theta^r(1-\theta)^{n-r}$$
+
+Which, under the uniform prior, leads to the predictive probability for success at the next trial equal to the Laplace's rule of succession and the (mean) estimate of $\theta$ equal to the result discussed earlier.
+
+### Revisit of the concave pre-prior
+
+Same can be obtained from discrete cases under the limit $N \rightarrow \infty$. The concave pre-prior would become an "improper" prior for $\theta$
+
+$$\frac{A}{R(N-R)} \rightarrow \frac{d\theta}{\theta(1-\theta)}$$
+
+Some integrals might diverge. Limit of the ratio is often well behaved, unlike the ratio of the limits.
+
+---
+# Optional stopping
+
+What if we decided on the number of trials $n$ (or successes $r$ or log-odds $u=log[r/(n-r)]$) upfront? Then it should be reasonable to take it in consideration along with the prior. However, that information is already contained in the data, so it would not make any difference for the conclusion.
+$$AA=A$$
+> it is astonishing that such a thing could be controversial in the 20th *(or 21st!)* century
+
+Any function $f(D)$, if known in advance, can have major impact on the sample space or sampling distribution, but it is redundant for inference from data. Noting the probability of the data that **could** be observed, but was **not**, gives us no new information, not already contained in the prior.
+
+What if the data was generated, but we failed to observe it? Such data is relevant, as our conclusion should depend on wheteher such data were observed or not. Generally speaking:
+
+- population $N$
+- rate of emitting $p$
+- rate of detecting $\theta$
+
+We have results of detection $\{c_1,c_2,\dots\}$ what can be say about the number of emitted $\{n_1,n_2,\dots\}$?
+
+> Two ‘binary games’ played in succession, and we can observe only the outcome of the last one.
+
+---
+# Quantitative prior information
+
+Efficiency of the counter $\phi$. If $\phi$ is know then particle passing through detector has *independent* probability of being detected (making a count).
+
+If $\phi$ is known each successive draw is still *causally* independent, but not anymore *logically* independent because each successive draw "updates" our belief about the next particle producing a count (like that sampling with replacement). 
+
+Suppose we are given: $N$ nuclei each has independent probability of emitting a particle $r$ each second (which will pass through detector). What is the probability that exactly $n$ particles will pass through detector? This a binomial distribution problem with $N \rightarrow \infty$ and $r \rightarrow 0$ in such a way that $Nr \rightarrow s = \text{const}$ , so $p(n|Nr)$ becomes $p(n|s)$ a Poisson distribution $\exp\{-s\}\frac{s^n}{n!}$, where $s$ is "source strength" -  the expectation of the number of particles per second.
+
+Say we know not $n$ but only $s$. What's the probability of seeing exactly $c$ counts in 1 second? Since $p(c|n\phi s)=p(c|n\phi)$, if we knew $n$ number of particles in the count, it would not matter what $s$ was. Poisson distribution with expectations $s\phi$
+
+```{r dot-ex, echo=FALSE, engine = "dot", cache=TRUE, fig.align='center'}
+# You need to have graphviz installed in your system
+digraph fig61 {
+  rankdir="LR";
+  s -> n -> c;
+}
+```
+
+---
+
+# From distibution to estimate
+
+What is the "most advantageous" estimate?
+
+- Laplace: estimate will have an error $e=(\alpha-\alpha^*)$. Minimize expected magnitude $|\alpha|$
+- Gauss and Legendre: least squares $(\alpha-\alpha^*)^2$
+- Median estimate: more robust to tail variation (can also be $x_{25}, x_{50}, x_{75}$ or moments)
+- Peak of $\hat\alpha$ or the "mode": equivalent to MLE
+
+Expectation
+$$(n)=\sum_n np(n|\phi c s)=c+s(1-\phi)$$
+Maximum likelihood estimate
+$$(n)_{MLE}=c/\phi$$
+
+> If a disease is mild and unlikely to cause death, then variations in the observed number of deaths are not reliable indicators of variations in the incidence of the disease. If our prior information tells us that there is a constantly operating basic cause of the disease (such as a contaminated water supply), then a large change in the number of deaths from one year to the next is not evidence of a large change in the number of people having the disease
+
+---
+# Effects of qualitative prior information
+
+Two people (Mr. A and Mr. B) in the lab, only Mr. A knows about the source ( $I_A$ ). Both know that counter efficiency $\phi=0.1$. During the experiment 10 counts are registered.
+
+.pull-left[
+```{r, echo=FALSE, engine = "dot", cache=TRUE, fig.align='center'}
+# You need to have graphviz installed in your system
+digraph fig62_1 {
+  rankdir="LR";
+  n3 -> c3;
+  n2 -> c2;
+  n1 -> c1;
+}
+```
+]
+.pull-right[
+```{r, echo=FALSE, engine = "dot", cache=TRUE, fig.align='center'}
+# You need to have graphviz installed in your system
+digraph fig62_2 {
+  rankdir="LR";
+  s -> n1 -> c1;
+  s -> n2 -> c2;
+  s -> n3 -> c3;
+}
+```
+]
+
+Mr. A needs to assign prior probability $p(n_1|I_A)$. He could use "almost any" smooth prior.
+
+After the first observation their posterior distributions will be the same $p(n_1|c_1I_B)=\phi p(c_1|\phi n_1)$.
+
+However, after the second observation estimates diverge, because Mr. B has two logical routes available to him, while Mr.A has only one. Information obtained from $c_2 \rightarrow n_2 \rightarrow s \rightarrow n_1$ is "correcting" the inference obtained from $c_1 \rightarrow n_1$
+---
+
+# Jeffreys prior
+
+Correct way to express complete ignorance is to assign uniform prior probability to its logarithm
+
+$$p(s|I_J) \propto \frac{1}{s}, \quad (0 \leq s \leq \infty)$$
+
+Advantage is that if we use Jeffreys prior we are saying same thing whether we use $s$ or any power of it as parameter.
+
+## Small samples
+
+Frequentists statistics just qualifies that conclusions are only valid for large $n$ and never questions the method of inference.
+
+Many small data problems are "unsolvable" unless one allows for prior information to be incorporated.
+
+> Fisher was able to manage without mentioning prior in-
+formation only because, in the problems he chose to work on, he had no very important prior information anyway, and plenty of data. Had he worked on problems with cogent prior information and sparse data, we think that his ideology would have changed rather quickly.
+
+---
+
+class: center, middle
+
+# See you next time!
+
+Slides created via the R packages [**xaringan**](https://github.com/yihui/xaringan),
+[**xaringanExtra**](https://github.com/gadenbuie/xaringanExtra) and [**xaringanthemer**](https://github.com/gadenbuie/xaringanthemer).
+
+The chakra comes from [remark.js](https://remarkjs.com), [**knitr**](http://yihui.name/knitr), and [R Markdown](https://rmarkdown.rstudio.com).
+
+---
+# References
+
+Aczél, J., 1966. Lectures on Functional Equations and their Applications, Academic Press,
+New York.
+
+Cox, R. T., 1961. The Algebra of Probable Inference, Johns Hopkins University Press, Baltimore
+MD.
+
+Hamilton, A.G., 1988. Logic for mathematicians. Cambridge University Press.
+
+Jaynes, E.T., 2003. Probability theory: The logic of science. Cambridge university press.
+
+Keynes, J. M., 1921. A Treatise on Probability, Macmillan, London; reprinted by Harper & Row,
+New York (1962).
+
+

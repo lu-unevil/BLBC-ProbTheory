@@ -10,7 +10,7 @@
     <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
     <link href="libs/panelset/panelset.css" rel="stylesheet" />
     <script src="libs/panelset/panelset.js"></script>
-    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"xa98968e0976447bb0e3c296f9cc5c42","expires":14}</script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"x9f8dede87c7408f9d699e9938a6f8c8","expires":14}</script>
     <script src="libs/himalaya/himalaya.js"></script>
     <script src="libs/js-cookie/js.cookie.js"></script>
     <link href="libs/editable/editable.css" rel="stylesheet" />
@@ -85,25 +85,25 @@ The logic of science
 Bayes@Lund Book Club&lt;br&gt;Chapter 6
 ]
 &lt;br&gt;
-Part 1
+Part 2
 
 ---
 background-image: url(fig/pt-bookcover.jpg)
 background-position: right 50px bottom 50px
 background-size: 25%
 
-# Quick recap of Chapters 1-5
-
+# Quick recap of Chapter 6 (so far)
+### Elementary parameter estimation
 .pull-left[
-- Deductive vs plausible reasoning. The logical robot. Desiderata for plausibility reasoning
+- Inverted urn problem: from "pre-data" (*D* is unknown) to "post-data" (*N* and *R* are unknown)
 
-- Quantitative rules (product rule and sum rule).
+- Predictive distribution: "probability of the next draw"
 
-- Sampling without replacement. Expectations. Binomial distribution. Sampling with replacement (+ corrections for correlations).
+- Priors: truncated uniform, "concave prior"
 
-- Prior probabilities. Multiple hypothesis testing. Continuous distributions (infinite number of hypotheses).
+- Binomial monkey prior: independent events
 
-- Queer uses for probability theory (telepathic powers, discovery of Neptune, horce racing, weather forecasting)
+&gt; Does the appearance of a binomial distribution already imply logical independence of the separate events?
 
 ### Let's jump in!
 ]
@@ -113,137 +113,123 @@ class: inverse, center, middle
 
 # Chapter 6
 ## Elementary parameter estimation
+### Metamorphosis into continuous parameter estimation
 ---
-background-image: url(fig/ch6-urn.png)
-background-position: right 50px bottom 100px
-background-size: 25%
+# Estimation with binomial sampling
 
-# Parameter estimation `\(\approx\)` hypothesis testing
+When hypotheses become so "dense" it is difficult to distinguish between them, then we can think of an index `\(t\)` as a continuously variable parameter `\(\theta\)`. The problem becomes that of estimating the parameter `\(\theta\)` and making statements about the accuracy of the estimate.
 
-- From choosing hypotheses to estimating parameters:
-  - Many (many!) hypotheses indexed by `\(t\)` so `\(H_t, (1\leq t \leq n )\)`. 
-  - Instead of choosing `\(H_t\)` say that `\(t\)` is a quantity of interest.
+### Bernoulli trials
 
-- In earlier chapters: "pre-data" problem
-    - `\(N\)` balls in urn, of them `\(R\)` are red (rest are white)
-    - Draw `\(n\)`. What mix of red `\((r)\)` to white `\((n-r)\)` can we expect?
+`$$x_i \equiv \begin{cases} 1 \quad \text{if the }i\text{th trial yields success}\\0 \quad \text{otherwise} \end{cases}$$`
 
-- Now: "post-data" problem.
-    - We know `\(n\)` and `\(r\)`. What can we say about `\(N\)` and `\(R\)`?
+Data: `\(D \equiv \{x_1,\dots,x_n\}\)`. Prior information `\(I\)`: parameter `\(\theta\)` such that at each trial, probability for success is `\(\theta\)` and for failure `\((1-\theta)\)`.
 
-- Likelihood of seeing `\(r\)` on `\(n\)` draws (without replacement)
+Sampling distibution for `\(r\)` number of successes observed in `\(n\)` trials then:
 
-`\(p(D|NRI)=h(r|NR,n)=\dbinom{N}{n}^{-1}\dbinom{R}{r}\dbinom{N-R}{n-r}\)`,
-
-where `\(I\)` is background information is represented by a hypergeometric distribution
+`$$p(D|\theta I)=\prod_{i=1}^{n}p(x_i|\theta I)= \theta^r(1-\theta)^{n-r}$$`
 ---
-# Parameter independence
+# Estimation with binomial sampling
 
-We're interested in estimating both `\(N\)` and `\(R\)`. Being able to draw `\(n\)` balls implies at least that `\(N \geq n\)`. Does drawing `\(r\)` red balls tell us anything about `\(N\)`? Joint posterior for `\(N\)` and `\(R\)`:
+Posterior ($A$ is a normalizing constant):
 
-`$$p(NR|DI)=p(N|I)p(R|NI)\frac{p(D|NRI)}{p(D|I)}$$`
-where prior `\(p(NR|I)\)` has been decomposed (factored) using the product rule. The "normalizing" denominator is then:
+`$$p(\theta|DI)=p(\theta|I)\frac{p(D|\theta I)}{\int d\theta p(\theta|I)p(D|\theta I)}=Ap(\theta|I)\theta^r(1-\theta)^{n-r}$$`
 
-`$$p(D|I)=\sum_{N=0}^{\infty}\sum_{R=0}^{N}p(N|I)p(R|NI)p(D|NRI)$$`
+Which, under the uniform prior, leads to the predictive probability for success at the next trial equal to the Laplace's rule of succession and the (mean) estimate of `\(\theta\)` equal to the result discussed earlier.
 
-General condition is that data tells us nothing about `\(N\)` (except truncating `\(N&lt;n\)`):
+### Revisit of the concave pre-prior
 
-`$$p(D|NI)=\sum_{R=0}^{N}p(D|NRI)p(R|NI)=\begin{cases}\begin{aligned}&amp;f(n,r), &amp;\text{if }N\geq n\\&amp;0, &amp;\text{if } N&lt;n  \end{aligned}\end{cases}=f(n,r)\dbinom{N}{n}$$`
+Same can be obtained from discrete cases under the limit `\(N \rightarrow \infty\)`. The concave pre-prior would become an "improper" prior for `\(\theta\)`
 
-Mathematical constraint on `\(p(R|NI)\)` is that `\(f(n,r)\)` is independent of `\(N\)`, when `\(N&gt;n\)`.
+`$$\frac{A}{R(N-R)} \rightarrow \frac{d\theta}{\theta(1-\theta)}$$`
+
+Some integrals might diverge. Limit of the ratio is often well behaved, unlike the ratio of the limits.
 
 ---
-#Closer look at the prior
+# Optional stopping
 
-In `\(p(NR|DI)=p(N|DI)p(R|NDI)\)` our main concern is inferences about `\(R\)` or `\(R/N\)` where `\(N\)` is known. Posterior for `\(R\)` then:
-`$$p(R|DNI)=p(R|NI)\frac{p(D|NRI)}{p(D|NI)}$$`
+What if we decided on the number of trials `\(n\)` (or successes `\(r\)` or log-odds `\(u=log[r/(n-r)]\)`) upfront? Then it should be reasonable to take it in consideration along with the prior. However, that information is already contained in the data, so it would not make any difference for the conclusion.
+`$$AA=A$$`
+&gt; it is astonishing that such a thing could be controversial in the 20th *(or 21st!)* century
 
-### Uniform prior
+Any function `\(f(D)\)`, if known in advance, can have major impact on the sample space or sampling distribution, but it is redundant for inference from data. Noting the probability of the data that **could** be observed, but was **not**, gives us no new information, not already contained in the prior.
 
-Consider prior knowledge `\(I_0\)`: absolute ignorance about `\(R\)` while knowing `\(N\)` (uniform distribution):
-`$$p(R|NI_0)=\begin{cases}\begin{aligned} &amp;\frac{1}{N+1} &amp;\text{if } 0 \leq R \leq N, \\&amp;0 &amp;\text{if }R&gt;N,  \end{aligned}\end{cases}=\frac{1}{n+1}\dbinom{N}{n}$$`
-And correctly normalized posterior
-`$$p(R|DNI_0)=\dbinom{N+1}{n+1}^{-1}\dbinom{R}{r}\dbinom{N-R}{n-r}$$`
+What if the data was generated, but we failed to observe it? Such data is relevant, as our conclusion should depend on wheteher such data were observed or not. Generally speaking:
 
----
-#Posterior probability estimate
+- population `\(N\)`
+- rate of emitting `\(p\)`
+- rate of detecting `\(\theta\)`
 
-What is the "most probable" value of `\(R\)`? Let's find expectation of R over the posterior distribution
-`$$\langle R\rangle=E(R|DNI_0)=\sum_{R=0}^{N}Rp(R|DNI_0)$$`
-Solving this 
-`$$\langle R\rangle+1=(r+1)\dbinom{N+1}{n+1}^{-1}\dbinom{N+2}{n+2}=\frac{(N+2)(r+1)}{(n+2)}$$`
-And most notably, the number of red balls left in the urn after drawing
-`$$\langle F\rangle=\frac{\langle R\rangle-r}{N-n}=\frac{r+1}{n+2}$$`
----
-# Predictive distribution
+We have results of detection `\(\{c_1,c_2,\dots\}\)` what can be say about the number of emitted `\(\{n_1,n_2,\dots\}\)`?
 
-Define drawing red on i-th draw: `\(R_i \equiv \text{red on the }i\text{-th draw}, \quad 1\leq i \leq N\)`.
-After having drawn a sample of `\(r\)` red balls in `\(n\)` draws, what is the probability that the next one drawn will be red?&lt;sup&gt;1&lt;/sup&gt;
-
-`$$p(R_{n+1}|DNI_0)=\sum_{R=0}^{N}p(R_{n+1}R|DNI_0)=\sum_{R=0}^{N}p(R_{n+1}|RDNI_0)p(R|DNI_0)=\frac{r+1}{n+2}$$`
-&gt; "A probability is not the same thing as a frequency; but, under quite general conditions, the predictive probability of an event at a single trial is numerically equal to the expectation of its frequency in some specified class of trials."
-
-What accuracy can be claimed for the estimate of `\(R\)`? This can be estimated with *variance* `\(var(R)\)`.
-`$$var(R=\frac{p(1-p)}{n+3}(N+2)(N-n)$$`
-Note the `\((N-n)\)`: as the sample approaches `\(N\)`, we get more accurate estimate, until `\(var(R)\)` shrinks to 0. Estimate of remaining red balls is
-`$$(F)_{est}=p\pm\sqrt{\frac{p(1-p)}{n+3}}$$`
-
-.footnote[[1] "Laplace's rule of succession"]
----
-# Examples
-
-&gt; News reported that a "random poll" of 1600 voters was taken, indicating that 41% of the population favored a certain candidate in the next election, and claiming a ±3% margin of error for this result
-
-For `\((F)_{est}=\langle F \rangle(1\pm 0.03)\)` we need a sample `\(n+3=\frac{1-p}{p}\frac{1}{(0.03)^2}=\frac{1-0.41}{0.41}\times 1111=1598.9\)` or `\(n=1596\)`
-
-### Truncated uniform prior
-
-Suppose, our prior information `\(I_1\)` is that `\(0&lt;R&lt;N\)`, i.e. there's at least 1 red and 1 white ball in the urn. Prior:
-`$$p(R|NI_1)=\begin{cases}\begin{aligned}&amp;\frac{1}{N-1},  &amp;\text{if }1 \leq R \leq N-1\\&amp;0 &amp;\text{otherwise} \end{aligned} \end{cases}$$`
-
-But our posterior is still 
-`$$p(R|DNI_1)=p(R|DNI_0), \quad 0 &lt; r &lt; n$$`
-
-&gt;Different priors do not necessarily lead to different conclusions; and whether they do or do not can depend on which data set we happen to get.
+&gt; Two ‘binary games’ played in succession, and we can observe only the outcome of the last one.
 
 ---
-# Concave prior
+# Quantitative prior information
 
-Remember from Laplace's rule of succession probability of getting red on the next draw was
-`$$\frac{r+1}{n+2}=\frac{n(r/n)+2(1/2)}{n+2}$$`
-Which looks like weighted average of fraction `\(r/n\)` and prior expectation of `\(1/2\)`. Uniform prior carries a weight corresponding to 2 observations. Can there be even less informative prior? We need prior that would lead to unform posterior, a "pre-prior".
+Efficiency of the counter `\(\phi\)`. If `\(\phi\)` is know then particle passing through detector has *independent* probability of being detected (making a count).
 
-`$$p(R|DNI_{00})=p(R|NI_1)=\frac{1}{N-1}, \quad 1 \leq R \leq N-1$$`
-Concave priors are useful, but they demonstrate instability when `\(N \rightarrow \infty\)`, as they become non-normalizable.
+If `\(\phi\)` is known each successive draw is still *causally* independent, but not anymore *logically* independent because each successive draw "updates" our belief about the next particle producing a count (like that sampling with replacement). 
+
+Suppose we are given: `\(N\)` nuclei each has independent probability of emitting a particle `\(r\)` each second (which will pass through detector). What is the probability that exactly `\(n\)` particles will pass through detector? This a binomial distribution problem with `\(N \rightarrow \infty\)` and `\(r \rightarrow 0\)` in such a way that `\(Nr \rightarrow s = \text{const}\)` , so `\(p(n|Nr)\)` becomes `\(p(n|s)\)` a Poisson distribution `\(\exp\{-s\}\frac{s^n}{n!}\)`, where `\(s\)` is "source strength" -  the expectation of the number of particles per second.
+
+Say we know not `\(n\)` but only `\(s\)`. What's the probability of seeing exactly `\(c\)` counts in 1 second? Since `\(p(c|n\phi s)=p(c|n\phi)\)`, if we knew `\(n\)` number of particles in the count, it would not matter what `\(s\)` was. Poisson distribution with expectations `\(s\phi\)`
+
+&lt;img src="BLBC-ProbabilityTheory-Chapter6-2_files/figure-html/dot-ex-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
-background-image: url(fig/ch6-monkeys.png)
-background-position: right 30px bottom 170px
-background-size: 20%
 
-# Binomial monkey prior
+# From distibution to estimate
 
-Suppose we have a prior information `\(I_2\)` that the urn was filled by a team of monkeys. Each ball had an equal chance `\(g\)` of being red. Then our prior would be:
+What is the "most advantageous" estimate?
 
+- Laplace: estimate will have an error `\(e=(\alpha-\alpha^*)\)`. Minimize expected magnitude `\(|\alpha|\)`
+- Gauss and Legendre: least squares `\((\alpha-\alpha^*)^2\)`
+- Median estimate: more robust to tail variation (can also be `\(x_{25}, x_{50}, x_{75}\)` or moments)
+- Peak of `\(\hat\alpha\)` or the "mode": equivalent to MLE
 
-`$$p(R|NI_2)=\dbinom{N}{R}g^R(1-g)^{N-R}, \quad 0 \leq R \leq N$$`
-Then our likelihood would be:
+Expectation
+`$$(n)=\sum_n np(n|\phi c s)=c+s(1-\phi)$$`
+Maximum likelihood estimate
+`$$(n)_{MLE}=c/\phi$$`
 
-`$$p(D|NI)=\dbinom{n}{r}g^r(1-g)^{n-r}$$`
-Since likelihood is independent of `\(N\)` we can factor the joint posterior. Normalized posterior: 
+&gt; If a disease is mild and unlikely to cause death, then variations in the observed number of deaths are not reliable indicators of variations in the incidence of the disease. If our prior information tells us that there is a constantly operating basic cause of the disease (such as a contaminated water supply), then a large change in the number of deaths from one year to the next is not evidence of a large change in the number of people having the disease
 
-`$$p(R|DNI_2)=\dbinom{N-n}{R-r}g^{R-r}(1-g)^{N-R-n+r}$$`
-Estimated fraction of red balls left in the urn (OBS! binomial prior nullifies the data!)
-`$$\frac{(R-r)_{est}}{N-n}=g \pm \sqrt{\frac{g(1-g)}{N-n}}$$`
 ---
-# How come?
+# Effects of qualitative prior information
 
-&gt;Comparing the binomial prior with the uniform prior, one would suppose that the binomial prior, being moderately peaked, expresses more prior information about the proportion `\(R/N\)` of red balls; therefore by its use one should be able to improve his estimates of `\(R\)`
+Two people (Mr. A and Mr. B) in the lab, only Mr. A knows about the source ( `\(I_A\)` ). Both know that counter efficiency `\(\phi=0.1\)`. During the experiment 10 counts are registered.
 
-Given that filling mechanism, then knowing that any given ball is in fact red, gives one no information whatsoever about any other ball (each ball had independent probability `\(g\)` of being red). That is, `\(P(R_1R_2|I) = P(R_1|I)P(R_2|I)\)`. This logical independence in the prior is preserved in the posterior distribution.
+.pull-left[
+&lt;img src="BLBC-ProbabilityTheory-Chapter6-2_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
+]
+.pull-right[
+&lt;img src="BLBC-ProbabilityTheory-Chapter6-2_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+]
 
-### Question: Does the appearance of a binomial distribution already imply logical independence of the separate events?
+Mr. A needs to assign prior probability `\(p(n_1|I_A)\)`. He could use "almost any" smooth prior.
 
+After the first observation their posterior distributions will be the same `\(p(n_1|c_1I_B)=\phi p(c_1|\phi n_1)\)`.
+
+However, after the second observation estimates diverge, because Mr. B has two logical routes available to him, while Mr.A has only one. Information obtained from `\(c_2 \rightarrow n_2 \rightarrow s \rightarrow n_1\)` is "correcting" the inference obtained from `\(c_1 \rightarrow n_1\)`
+---
+
+# Jeffreys prior
+
+Correct way to express complete ignorance is to assign uniform prior probability to its logarithm
+
+`$$p(s|I_J) \propto \frac{1}{s}, \quad (0 \leq s \leq \infty)$$`
+
+Advantage is that if we use Jeffreys prior we are saying same thing whether we use `\(s\)` or any power of it as parameter.
+
+## Small samples
+
+Frequentists statistics just qualifies that conclusions are only valid for large `\(n\)` and never questions the method of inference.
+
+Many small data problems are "unsolvable" unless one allows for prior information to be incorporated.
+
+&gt; Fisher was able to manage without mentioning prior in-
+formation only because, in the problems he chose to work on, he had no very important prior information anyway, and plenty of data. Had he worked on problems with cogent prior information and sparse data, we think that his ideology would have changed rather quickly.
 
 ---
 
