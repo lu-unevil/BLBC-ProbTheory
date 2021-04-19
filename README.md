@@ -27,4 +27,4 @@ This repository is collection of presentations for the Bayes@Lund Book Club sess
   - Chapter 6.2. [Text](http://www-biba.inrialpes.fr/Jaynes/prob.html), [Slides](https://lu-unevil.github.io/BLBC-ProbTheory/BLBC-ProbabilityTheory-Chapter6-2.html#1)
   
 **Session 6**. 19 April 2021  
-  - Chapter 8. [Text](http://www-biba.inrialpes.fr/Jaynes/prob.html), [Slides]()
+  - Chapter 8. [Text](http://www-biba.inrialpes.fr/Jaynes/prob.html), [Slides](https://lu-unevil.github.io/BLBC-ProbTheory/BLBC-ProbabilityTheory-Chapter8.html#1)
