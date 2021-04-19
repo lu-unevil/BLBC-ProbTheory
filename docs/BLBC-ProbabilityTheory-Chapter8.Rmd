@@ -1,0 +1,417 @@
+---
+title: "Bayes@Lund_Chapter8" # this will only be show in share-along
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    lib_dir: libs
+    seal: false
+    nature:
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+  header-includes: 
+  - \usepackage{tikz}
+---
+
+class: title-slide, inverse, left
+
+```{css, echo = FALSE}
+
+.title-slide .remark-slide-number {
+  display: none;
+}
+
+```
+
+```{r setup, include=FALSE}
+
+options(htmltools.dir.version = FALSE)
+
+library(extrafont); library(tidyverse)
+
+```
+
+```{r xaringan-extra-all-the-things, echo=FALSE}
+
+library(xaringanExtra)
+
+xaringanExtra::use_xaringan_extra(
+  c("tile_view", "panelset", "editable", 
+    "animate", "tachyons")
+)
+
+xaringanExtra::use_tachyons()
+
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,         
+  mute_unhighlighted_code = TRUE  
+)
+
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+
+library(xaringanthemer)
+
+style_mono_accent(base_color = "midnightblue",
+  header_font_google = google_font("Bahnschrift"),
+  text_font_google   = google_font("Bahnschrift"),
+  code_font_google   = google_font("Fira Mono"))
+
+```
+
+.h1.f-headline.fw1[
+
+]
+
+.h2.f-subheadline.lh-title[
+ 
+]
+
+<br><br><br>
+.f3.lh-title[
+Bayes@Lund Bok Club<br><br>
+Probability Theory: The Logic of Science<br>
+Chapter 8: 'Sufficiency, Ancillarity, and all that'<br><br>
+Domenic Di Francesco <br><br>
+Monday 19th April 2021
+]
+
+---
+
+# Initial Thoughts
+
+ - Some contempt for the jargon.
+ 
+ - Distinct from Bayesian statistics.
+ 
+*'None of the material of the present chapter, however, is really needed in our applications; for us, these are incidental details that take care of themselves as long as we obey the rules.'*
+
+*'It is useful to understand these features, for tactical reasons.'*
+
+---
+class: inverse, center, middle
+
+# 8.1
+## Sufficiency
+
+---
+
+## Sufficiency
+
+### Introduction
+
+.center[![sufficient](BLBC-ProbabilityTheory-Chapter8_files/sufficient.png)]
+
+---
+
+## Sufficiency
+
+### Introduction
+
+When can all of the information in a dataset be **completely** summarised using a simpler expression?
+
+--
+
+$$
+f(data \mid \theta) = r(data \mid \theta) \times b(data) 
+$$
+
+--
+
+A **sufficient statistic** for a parameter, $\theta$, is a function of the data, $r(data)$, (referred to as 'property $R$' in Chapter 8).
+
+Estimates for $\theta$ only depend on the data through $R$. This implies that some features (not contained in $R$) are irrelevant.
+
+--
+
+Ultimately...
+
+$$
+\Pr(\theta \mid z) = \Pr(\theta \mid r)
+$$
+
+---
+
+## Sufficiency
+
+### Examples
+
+**Example**: $N$ Bernoulli trials, modelled using a Binomial distribution.
+$\theta$ only depends on the number of successes, $r$:
+
+$$
+f(data \mid \theta) = \theta^{\:r}(1 - \theta)^{N - r}
+$$
+
+And the posterior distribution (using a uniform prior between $0$ and $1$) is shown to be:
+
+$$
+\Pr(\theta \mid data) = \dfrac{(n + 1)!}{r! \cdot (n - r)!} \cdot \theta^{\:r}(1 - \theta)^{N - r}
+$$
+
+--
+
+**r is sufficient for $\theta$.**
+
+---
+
+## Sufficiency
+
+### Examples
+
+**Example**: the (in-sample) mean, $\bar{data}$, and variance, $s$, are **jointly sufficient** for a normally distributed parameter, see below:
+
+$$
+\theta \sim N(\mu, \sigma)
+$$
+
+$$
+f(data \mid \theta) = \bigg( \dfrac{1}{2 \pi \sigma^{2}} \bigg) \cdot \exp \bigg[ - \dfrac{n}{2 \sigma^{2}} \cdot (\mu - \bar{data})^{2} + s^{2} \bigg]
+$$
+--
+
+Eventually leading to simplified marginal posterior estimates:
+
+$$
+\Pr(\mu \mid \sigma, z) \propto \Pr(\mu) \cdot \exp \bigg[- \dfrac{n}{2 \cdot \sigma^{2}} \cdot (\bar{data} - \mu) \bigg]
+$$
+
+$$
+\Pr(\sigma \mid \mu, z) \propto \Pr(\sigma) \cdot \sigma^{n} \cdot \exp \bigg[- \dfrac{n}{2 \cdot \sigma^{2}} \cdot (\bar{data^{2}} - 2\mu \cdot  \bar{data} + \mu^{2}) \bigg]
+$$
+
+---
+
+## Sufficiency
+
+### Special cases
+
+The **Cauchy distribution** cannot be reduced using a sufficient statistic.
+
+$$f(data \mid \theta) = {\dfrac{1}{\pi \cdot \sigma} \cdot \dfrac{1}{\sigma^{2} + (data_{i} - \theta)^{2}}}$$
+
+```{r, warning = FALSE, message = FALSE, echo = FALSE, fig.align = 'center', fig.height = 4, fig.width = 8}
+ggplot(data = NULL)+
+  stat_function(fun = dcauchy, geom = 'density', fill = 'grey', 
+                args = list(location = 0, scale  = 1))+
+  scale_x_continuous(name = expression(theta), limits = c(-3, 3))+
+  scale_y_continuous(name = expression(dCauchy(theta)))+
+  ggthemes::theme_base()+
+  theme(plot.background = element_rect(colour = NA))
+```
+
+
+---
+
+## Sufficiency
+
+### Special cases
+
+**Fisher sufficiency** requires a likelihood (sampling) function of the form:
+
+$$
+f(z \mid \theta) = f(r \mid \theta) \cdot b(z)
+$$
+
+This is a more restrictive assumption that can allow us to identify sufficient statistics independently of a prior: 
+
+--
+
+*'This means that use of a particular prior may make certain particular aspects of the data irrelevant. Then a different prior may make different aspects of the data irrelevant.'*
+
+*'This phenomenon is mysterious only for those who think of probability in terms of frequencies; as soon as we think of probability distributions as carriers of information the reason for it suddenly seems trivial and obvious. It really amounts to no more than the principle of Boolean algebra AA = A; redundant information is not counted twice.'*
+
+---
+
+## Sufficiency
+
+### Special cases
+
+Integrating out **nuisance parameters**, $\theta_{n}$ can be an intermediate step in obtaining a sufficient statistic with respect to the parameters we really care about, $\theta$:
+
+$$f(z \mid \theta) \equiv \int \Pr(\theta_{n} \mid \theta) \cdot f(z \mid \theta, \theta_{n}) \; d\theta_{n}$$
+
+...which can then be factorised using some sufficient statistic for $\theta$:
+
+$$
+f(z \mid \theta) = f(r \mid \theta) \cdot b(z)
+$$
+
+...However, now $f(r \mid \theta)$ and $b(z)$ are all functions of nuisance parameters $theta_{n}$.
+
+
+---
+class: inverse, center, middle
+
+## 8.6
+### Ancillarity
+
+---
+
+## Ancillarity
+
+### Introduction
+
+.center[![sufficient](BLBC-ProbabilityTheory-Chapter8_files/ancillary.png)]
+
+---
+
+## Ancillarity
+
+### Introduction
+
+An ancillary statistic, $A$, is a function of the data, $z$, such that it's sampling distribution is independent of the parameter(s):
+
+$$
+f(A \mid z)  = f(A)
+$$
+
+--
+
+**Example**: In the case of an unknown number of Bernoulli trials, $(r, N)$ is a jointly sufficient for $\theta$. 
+
+Here $N$ is considered the *ancillary compliment* to $r$, because the additional information that it provides allows us to obtain a sufficient statistic.
+
+---
+
+class: inverse, center, middle
+
+## 8.x
+### Some Miscellaneous Topics
+
+---
+
+## The Likelihood Principle
+
+
+The likelihood principle is as follows:
+
+*The likelihood function, $f(z \mid \theta)$, contains all of the information that the data provide on model parameters.*
+
+This is self-evident from Bayes theorem (since the posterior is proportional to only the likelihood function and the priors) but it is not universally accepted.
+
+--
+
+The below practices of orthodox statistics have been identified as contradicting the likelihood principle:
+
+ - The long-run frequency evaluation of parameter estimates.
+ 
+ - The variance in the sampling distribution determining the accuracy of an estimate.
+ 
+ - The requirement for *randomisation* to generate the sampling distribution.
+
+None of the above are entirely described by a **local** likelihood function.
+
+---
+
+## Fisher Information
+
+The log-likelihood of a model is given by:
+
+
+$$\dfrac{1}{n} \sum_{i =1}^{n}{\log{f(data_{i} \mid \theta)}}$$
+
+For multi-variate problems, the second partial derivative of the (maximum) log-likelihood gives the **Fisher information matrix**, $I_{i, j}$:
+
+$$I_{i, j} = - \dfrac{\partial^{2} \log{f(data \mid \theta)}}{\partial\theta_{i} \; \partial \theta_{j}}$$
+
+$$K_{cov} = I_{i, k}^{-1}$$
+
+???
+
+Log-likelihoods are often used because likelihoods can be very small.
+
+The Fisher information matrix is related to the covariance matrix - but this requires a sufficiently large number of samples so that the parameter estimates converge towards a normal distribution, with mean values equal to the point estimates.
+
+---
+
+## Pooling Information
+
+*'We all feel intuitively that the totality of evidence from a number of experiments ought to enable better inferences about a parameter than does the evidence of any one experiment. But intuition is not powerful enough to tell us when this is valid.'*
+
+--
+
+**Example**: Each of $10^9$ inhabitants of China can provide an estimate for the height of the emporer of China to $\pm 1 m$.
+
+Pooling (aggregating) these estimates **would not** give a result with a standard error of $\dfrac{1}{\sqrt{N}}$ ($0.03$ mm).
+
+Jaynes instead proposes a *'crude but useful rule of thumb'*, including of a common systematic error, $S$, and a random individual error, $R$:
+
+$$
+error = S \pm \dfrac{R}{\sqrt{N}}
+$$
+...but this doesn't allow us to distinguish between separate data points of different *quality*.
+
+---
+
+## Pooling Information
+
+Data from two experiments $A$ and $B$, can be combined using Bayes' theorem:
+
+$$
+\Pr(H \mid A, B, I) = \Pr(H \mid I) \times \dfrac{\Pr(A, B \mid H, I)}{\Pr(A, B \mid I)}
+$$
+Showing that data can be pooled when **both experiments share the same prior information**, $I$.
+
+???
+
+Pooling is another word for aggregating, or combining (collecting together)
+
+---
+
+## Pooling Information
+
+Two experiments compared the effectiveness of a new treatment to an old one:
+
+```{r, warning = FALSE, message = FALSE, echo = FALSE}
+
+exp_A_df <- tibble(experiment = 'A', treatment = c('Old', 'New'), 
+                   deaths = c(16519, 742), recoveries = c(4343, 122))
+
+exp_B_df <- tibble(experiment = 'B', treatment = c('Old', 'New'), 
+                   deaths = c(3876, 1233), recoveries = c(14488, 3907))
+
+exp_df <- rbind(exp_A_df, exp_B_df)
+  
+gt::gt(data = exp_df %>%
+         mutate(success = scales::percent(recoveries / (deaths + recoveries))))
+
+```
+
+Considering the data as a single population *'introduces a misleading bias'*:
+
+```{r, warning = FALSE, message = FALSE, echo = FALSE}
+
+gt::gt(data = exp_df %>%
+         group_by(treatment) %>% 
+         summarise(deaths_total  = sum(deaths),
+                   recoveries_total = sum(recoveries)) %>% 
+         mutate(success_total = scales::percent(recoveries_total / (deaths_total + recoveries_total))) %>% 
+         ungroup())
+
+```
+
+???
+
+Simpson's paradox? Some examples on Wikipedia
+
+---
+
+## Jaynes Concluding Comments
+
+ - **Sample re-use**: Bayes' theorem (algebraically) eliminates redundant information.
+ 
+ - **Effect of priors**: The importance of prior information depends on the information contained in the data.
+ 
+ - **Folk theorem**: Bayesian parameter estimation is not fundamentally constrained by sample size: *'...given a single observation, nothing prevents us from estimating a million different parameters.'*
+ 
+ - **Tricks & Gamesmanship**: The systematic use of probability theory (and not workarounds or *'ad-hockeries'*) should be adopted.
+
+
+---
+
+class: center, middle
+
+### Thanks!
