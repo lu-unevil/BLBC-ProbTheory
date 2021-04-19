@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Bayes@Lund_Chapter8</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"x48227651dc74853bc0ade7c174b4d60","expires":14}</script>
+    <script src="libs/himalaya/himalaya.js"></script>
+    <script src="libs/js-cookie/js.cookie.js"></script>
+    <link href="libs/editable/editable.css" rel="stylesheet" />
+    <script src="libs/editable/editable.js"></script>
+    <link href="libs/xaringanExtra-extra-styles/xaringanExtra-extra-styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+class: title-slide, inverse, left
+
+&lt;style type="text/css"&gt;
+
+.title-slide .remark-slide-number {
+  display: none;
+}
+
+&lt;/style&gt;
+
+
+
+
+
+
+
+.h1.f-headline.fw1[
+
+]
+
+.h2.f-subheadline.lh-title[
+ 
+]
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+.f3.lh-title[
+Bayes@Lund Bok Club&lt;br&gt;&lt;br&gt;
+Probability Theory: The Logic of Science&lt;br&gt;
+Chapter 8: 'Sufficiency, Ancillarity, and all that'&lt;br&gt;&lt;br&gt;
+Domenic Di Francesco &lt;br&gt;&lt;br&gt;
+Monday 19th April 2021
+]
+
+---
+
+# Initial Thoughts
+
+ - Some contempt for the jargon.
+ 
+ - Distinct from Bayesian statistics.
+ 
+*'None of the material of the present chapter, however, is really needed in our applications; for us, these are incidental details that take care of themselves as long as we obey the rules.'*
+
+*'It is useful to understand these features, for tactical reasons.'*
+
+---
+class: inverse, center, middle
+
+# 8.1
+## Sufficiency
+
+---
+
+## Sufficiency
+
+### Introduction
+
+.center[![sufficient](BLBC-ProbabilityTheory-Chapter8_files/sufficient.png)]
+
+---
+
+## Sufficiency
+
+### Introduction
+
+When can all of the information in a dataset be **completely** summarised using a simpler expression?
+
+--
+
+$$
+f(data \mid \theta) = r(data \mid \theta) \times b(data) 
+$$
+
+--
+
+A **sufficient statistic** for a parameter, `\(\theta\)`, is a function of the data, `\(r(data)\)`, (referred to as 'property `\(R\)`' in Chapter 8).
+
+Estimates for `\(\theta\)` only depend on the data through `\(R\)`. This implies that some features (not contained in `\(R\)`) are irrelevant.
+
+--
+
+Ultimately...
+
+$$
+\Pr(\theta \mid z) = \Pr(\theta \mid r)
+$$
+
+---
+
+## Sufficiency
+
+### Examples
+
+**Example**: `\(N\)` Bernoulli trials, modelled using a Binomial distribution.
+`\(\theta\)` only depends on the number of successes, `\(r\)`:
+
+$$
+f(data \mid \theta) = \theta^{\:r}(1 - \theta)^{N - r}
+$$
+
+And the posterior distribution (using a uniform prior between `\(0\)` and `\(1\)`) is shown to be:
+
+$$
+\Pr(\theta \mid data) = \dfrac{(n + 1)!}{r! \cdot (n - r)!} \cdot \theta^{\:r}(1 - \theta)^{N - r}
+$$
+
+--
+
+**r is sufficient for `\(\theta\)`.**
+
+---
+
+## Sufficiency
+
+### Examples
+
+**Example**: the (in-sample) mean, `\(\bar{data}\)`, and variance, `\(s\)`, are **jointly sufficient** for a normally distributed parameter, see below:
+
+$$
+\theta \sim N(\mu, \sigma)
+$$
+
+$$
+f(data \mid \theta) = \bigg( \dfrac{1}{2 \pi \sigma^{2}} \bigg) \cdot \exp \bigg[ - \dfrac{n}{2 \sigma^{2}} \cdot (\mu - \bar{data})^{2} + s^{2} \bigg]
+$$
+--
+
+Eventually leading to simplified marginal posterior estimates:
+
+$$
+\Pr(\mu \mid \sigma, z) \propto \Pr(\mu) \cdot \exp \bigg[- \dfrac{n}{2 \cdot \sigma^{2}} \cdot (\bar{data} - \mu) \bigg]
+$$
+
+$$
+\Pr(\sigma \mid \mu, z) \propto \Pr(\sigma) \cdot \sigma^{n} \cdot \exp \bigg[- \dfrac{n}{2 \cdot \sigma^{2}} \cdot (\bar{data^{2}} - 2\mu \cdot  \bar{data} + \mu^{2}) \bigg]
+$$
+
+---
+
+## Sufficiency
+
+### Special cases
+
+The **Cauchy distribution** cannot be reduced using a sufficient statistic.
+
+`$$f(data \mid \theta) = {\dfrac{1}{\pi \cdot \sigma} \cdot \dfrac{1}{\sigma^{2} + (data_{i} - \theta)^{2}}}$$`
+
+&lt;img src="BLBC-ProbabilityTheory-Chapter8_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+## Sufficiency
+
+### Special cases
+
+**Fisher sufficiency** requires a likelihood (sampling) function of the form:
+
+$$
+f(z \mid \theta) = f(r \mid \theta) \cdot b(z)
+$$
+
+This is a more restrictive assumption that can allow us to identify sufficient statistics independently of a prior: 
+
+--
+
+*'This means that use of a particular prior may make certain particular aspects of the data irrelevant. Then a different prior may make different aspects of the data irrelevant.'*
+
+*'This phenomenon is mysterious only for those who think of probability in terms of frequencies; as soon as we think of probability distributions as carriers of information the reason for it suddenly seems trivial and obvious. It really amounts to no more than the principle of Boolean algebra AA = A; redundant information is not counted twice.'*
+
+---
+
+## Sufficiency
+
+### Special cases
+
+Integrating out **nuisance parameters**, `\(\theta_{n}\)` can be an intermediate step in obtaining a sufficient statistic with respect to the parameters we really care about, `\(\theta\)`:
+
+`$$f(z \mid \theta) \equiv \int \Pr(\theta_{n} \mid \theta) \cdot f(z \mid \theta, \theta_{n}) \; d\theta_{n}$$`
+
+...which can then be factorised using some sufficient statistic for `\(\theta\)`:
+
+$$
+f(z \mid \theta) = f(r \mid \theta) \cdot b(z)
+$$
+
+...However, now `\(f(r \mid \theta)\)` and `\(b(z)\)` are all functions of nuisance parameters `\(theta_{n}\)`.
+
+
+---
+class: inverse, center, middle
+
+## 8.6
+### Ancillarity
+
+---
+
+## Ancillarity
+
+### Introduction
+
+.center[![sufficient](BLBC-ProbabilityTheory-Chapter8_files/ancillary.png)]
+
+---
+
+## Ancillarity
+
+### Introduction
+
+An ancillary statistic, `\(A\)`, is a function of the data, `\(z\)`, such that it's sampling distribution is independent of the parameter(s):
+
+$$
+f(A \mid z)  = f(A)
+$$
+
+--
+
+**Example**: In the case of an unknown number of Bernoulli trials, `\((r, N)\)` is a jointly sufficient for `\(\theta\)`. 
+
+Here `\(N\)` is considered the *ancillary compliment* to `\(r\)`, because the additional information that it provides allows us to obtain a sufficient statistic.
+
+---
+
+class: inverse, center, middle
+
+## 8.x
+### Some Miscellaneous Topics
+
+---
+
+## The Likelihood Principle
+
+
+The likelihood principle is as follows:
+
+*The likelihood function, `\(f(z \mid \theta)\)`, contains all of the information that the data provide on model parameters.*
+
+This is self-evident from Bayes theorem (since the posterior is proportional to only the likelihood function and the priors) but it is not universally accepted.
+
+--
+
+The below practices of orthodox statistics have been identified as contradicting the likelihood principle:
+
+ - The long-run frequency evaluation of parameter estimates.
+ 
+ - The variance in the sampling distribution determining the accuracy of an estimate.
+ 
+ - The requirement for *randomisation* to generate the sampling distribution.
+
+None of the above are entirely described by a **local** likelihood function.
+
+---
+
+## Fisher Information
+
+The log-likelihood of a model is given by:
+
+
+`$$\dfrac{1}{n} \sum_{i =1}^{n}{\log{f(data_{i} \mid \theta)}}$$`
+
+For multi-variate problems, the second partial derivative of the (maximum) log-likelihood gives the **Fisher information matrix**, `\(I_{i, j}\)`:
+
+`$$I_{i, j} = - \dfrac{\partial^{2} \log{f(data \mid \theta)}}{\partial\theta_{i} \; \partial \theta_{j}}$$`
+
+`$$K_{cov} = I_{i, k}^{-1}$$`
+
+???
+
+Log-likelihoods are often used because likelihoods can be very small.
+
+The Fisher information matrix is related to the covariance matrix - but this requires a sufficiently large number of samples so that the parameter estimates converge towards a normal distribution, with mean values equal to the point estimates.
+
+---
+
+## Pooling Information
+
+*'We all feel intuitively that the totality of evidence from a number of experiments ought to enable better inferences about a parameter than does the evidence of any one experiment. But intuition is not powerful enough to tell us when this is valid.'*
+
+--
+
+**Example**: Each of `\(10^9\)` inhabitants of China can provide an estimate for the height of the emporer of China to `\(\pm 1 m\)`.
+
+Pooling (aggregating) these estimates **would not** give a result with a standard error of `\(\dfrac{1}{\sqrt{N}}\)` ($0.03$ mm).
+
+Jaynes instead proposes a *'crude but useful rule of thumb'*, including of a common systematic error, `\(S\)`, and a random individual error, `\(R\)`:
+
+$$
+error = S \pm \dfrac{R}{\sqrt{N}}
+$$
+...but this doesn't allow us to distinguish between separate data points of different *quality*.
+
+---
+
+## Pooling Information
+
+Data from two experiments `\(A\)` and `\(B\)`, can be combined using Bayes' theorem:
+
+$$
+\Pr(H \mid A, B, I) = \Pr(H \mid I) \times \dfrac{\Pr(A, B \mid H, I)}{\Pr(A, B \mid I)}
+$$
+Showing that data can be pooled when **both experiments share the same prior information**, `\(I\)`.
+
+???
+
+Pooling is another word for aggregating, or combining (collecting together)
+
+---
+
+## Pooling Information
+
+Two experiments compared the effectiveness of a new treatment to an old one:
+
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#vazjarhvha .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#vazjarhvha .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vazjarhvha .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#vazjarhvha .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#vazjarhvha .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vazjarhvha .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vazjarhvha .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#vazjarhvha .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#vazjarhvha .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#vazjarhvha .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#vazjarhvha .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#vazjarhvha .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#vazjarhvha .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#vazjarhvha .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#vazjarhvha .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#vazjarhvha .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#vazjarhvha .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#vazjarhvha .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vazjarhvha .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#vazjarhvha .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vazjarhvha .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#vazjarhvha .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#vazjarhvha .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vazjarhvha .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vazjarhvha .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#vazjarhvha .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vazjarhvha .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#vazjarhvha .gt_left {
+  text-align: left;
+}
+
+#vazjarhvha .gt_center {
+  text-align: center;
+}
+
+#vazjarhvha .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#vazjarhvha .gt_font_normal {
+  font-weight: normal;
+}
+
+#vazjarhvha .gt_font_bold {
+  font-weight: bold;
+}
+
+#vazjarhvha .gt_font_italic {
+  font-style: italic;
+}
+
+#vazjarhvha .gt_super {
+  font-size: 65%;
+}
+
+#vazjarhvha .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="vazjarhvha" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">experiment</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">treatment</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">deaths</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">recoveries</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">success</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left">A</td>
+      <td class="gt_row gt_left">Old</td>
+      <td class="gt_row gt_right">16519</td>
+      <td class="gt_row gt_right">4343</td>
+      <td class="gt_row gt_left">20.8%</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">A</td>
+      <td class="gt_row gt_left">New</td>
+      <td class="gt_row gt_right">742</td>
+      <td class="gt_row gt_right">122</td>
+      <td class="gt_row gt_left">14.1%</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">B</td>
+      <td class="gt_row gt_left">Old</td>
+      <td class="gt_row gt_right">3876</td>
+      <td class="gt_row gt_right">14488</td>
+      <td class="gt_row gt_left">78.9%</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">B</td>
+      <td class="gt_row gt_left">New</td>
+      <td class="gt_row gt_right">1233</td>
+      <td class="gt_row gt_right">3907</td>
+      <td class="gt_row gt_left">76.0%</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+
+Considering the data as a single population *'introduces a misleading bias'*:
+
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#copxymflrq .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#copxymflrq .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#copxymflrq .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#copxymflrq .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#copxymflrq .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#copxymflrq .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#copxymflrq .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#copxymflrq .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#copxymflrq .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#copxymflrq .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#copxymflrq .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#copxymflrq .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#copxymflrq .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#copxymflrq .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#copxymflrq .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#copxymflrq .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#copxymflrq .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#copxymflrq .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#copxymflrq .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#copxymflrq .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#copxymflrq .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#copxymflrq .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#copxymflrq .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#copxymflrq .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#copxymflrq .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#copxymflrq .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#copxymflrq .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#copxymflrq .gt_left {
+  text-align: left;
+}
+
+#copxymflrq .gt_center {
+  text-align: center;
+}
+
+#copxymflrq .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#copxymflrq .gt_font_normal {
+  font-weight: normal;
+}
+
+#copxymflrq .gt_font_bold {
+  font-weight: bold;
+}
+
+#copxymflrq .gt_font_italic {
+  font-style: italic;
+}
+
+#copxymflrq .gt_super {
+  font-size: 65%;
+}
+
+#copxymflrq .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="copxymflrq" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">treatment</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">deaths_total</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">recoveries_total</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">success_total</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left">New</td>
+      <td class="gt_row gt_right">1975</td>
+      <td class="gt_row gt_right">4029</td>
+      <td class="gt_row gt_left">67%</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Old</td>
+      <td class="gt_row gt_right">20395</td>
+      <td class="gt_row gt_right">18831</td>
+      <td class="gt_row gt_left">48%</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+
+???
+
+Simpson's paradox? Some examples on Wikipedia
+
+---
+
+## Jaynes Concluding Comments
+
+ - **Sample re-use**: Bayes' theorem (algebraically) eliminates redundant information.
+ 
+ - **Effect of priors**: The importance of prior information depends on the information contained in the data.
+ 
+ - **Folk theorem**: Bayesian parameter estimation is not fundamentally constrained by sample size: *'...given a single observation, nothing prevents us from estimating a million different parameters.'*
+ 
+ - **Tricks &amp; Gamesmanship**: The systematic use of probability theory (and not workarounds or *'ad-hockeries'*) should be adopted.
+
+
+---
+
+class: center, middle
+
+### Thanks!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
